@@ -2,7 +2,7 @@
 
 Do you need studless (winter) tires on your Japan rental car? Enter a pickup postal code or city name, an optional destination and your dates. The page checks the season for that area plus the live 16-day forecast and shows a red, amber or green verdict, with a map of snow risk across Hokkaido, Honshu, Shikoku and Kyushu.
 
-Four languages: English (US), Japanese, German and Spanish. Quick picks for today, this week and next week, with ISO calendar week numbers (Monday start). Hazard layer: earthquakes from the past 7 days, volcanoes and active tsunami warnings, from the same live feeds as the Outcome Pacific Ring of Fire Hazard Map.
+Four languages: English (US), Japanese, German and Spanish. Quick picks for today, the next 7 days and next week (Monday–Sunday), with ISO calendar week numbers (Monday start). Hazard layer: earthquakes from the past 7 days, volcanoes and active tsunami warnings, from the same live feeds as the Outcome Pacific Ring of Fire Hazard Map.
 
 No server, no build step, no API keys. It runs entirely in the browser on GitHub Pages.
 

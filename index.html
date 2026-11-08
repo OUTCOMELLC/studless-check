@@ -168,7 +168,7 @@ footer a{color:inherit}
 const LANGS=[["en","English (US)","en-US"],["ja","日本語","ja-JP"],["de","Deutsch","de-DE"],["es","Español","es-ES"]];
 const I18N={
 en:{title:"Studless Check Japan",lede:"Renting a car in Japan this winter? Enter a postal code or city for where you’ll pick it up, where you’re driving and when. We check the season and the live forecast and tell you whether to add studless (winter) tires.",
-pick:"Pickup",pickHint:"postal code or city",dest:"Destination",destHint:"optional · postal code or city",first:"First day",last:"Last day",today:"Today",thisWeek:"This week",nextWeek:"Next week",wk:"Week {n}",
+pick:"Pickup",pickHint:"postal code or city",dest:"Destination",destHint:"optional · postal code or city",first:"First day",last:"Last day",today:"Today",thisWeek:"Next 7 days",nextWeek:"Next week",wk:"Week {n}",
 check:"Check my trip",checking:"Checking…",lv2:"Studless required",lv1:"Studless recommended",lv0:"Not needed",
 zHeavy:"snow country",zMountain:"a mountain area",zModerate:"an occasional-snow area",zLow:"a low-snow area",
 rSeason2:"{p} is in {z} and your dates fall in the snow season.",rSeason1:"{p} is in {z} where snow and ice are possible at this time of year.",
@@ -182,7 +182,7 @@ hazTitle:"Hazards near your route",hzQuake:"M{m} earthquake {k} km from {p} on {
 usePick:"Use as pickup",studless:"Studless",askBranch:"ask the branch",disclaimer:"Advice only, not a guarantee. Conditions change fast in the mountains, and many prefectures legally require winter tires or chains on snowy roads. Check your rental branch’s tire options and NEXCO road notices before you drive.",
 cWeather:"Weather",cPostal:"Postal lookup",cNames:"Place names",cMap:"Map and geocoding",cHaz:"Earthquakes and tsunami",lyV:"Snow-tire verdict",lyQ:"Earthquakes (7 days)",lyVo:"Volcanoes",lyS:"Rental stores"},
 ja:{title:"スタッドレス・チェック・ジャパン",lede:"この冬、日本でレンタカーを借りますか？受け取り場所の郵便番号または市区町村名、行き先、日程を入力してください。季節と最新の天気予報をもとに、スタッドレスタイヤ（冬用タイヤ）を付けるべきかをお知らせします。",
-pick:"受け取り場所",pickHint:"郵便番号または市区町村",dest:"行き先",destHint:"任意・郵便番号または市区町村",first:"初日",last:"最終日",today:"今日",thisWeek:"今週",nextWeek:"来週",wk:"第{n}週",
+pick:"受け取り場所",pickHint:"郵便番号または市区町村",dest:"行き先",destHint:"任意・郵便番号または市区町村",first:"初日",last:"最終日",today:"今日",thisWeek:"今後7日間",nextWeek:"来週",wk:"第{n}週",
 check:"旅程をチェック",checking:"チェック中…",lv2:"スタッドレス必須",lv1:"スタッドレス推奨",lv0:"ノーマルタイヤで可",
 zHeavy:"豪雪地帯",zMountain:"山間部",zModerate:"時々雪が降る地域",zLow:"雪の少ない地域",
 rSeason2:"{p}は{z}にあり、日程が降雪シーズンに当たります。",rSeason1:"{p}は{z}にあり、この時期は雪や凍結の可能性があります。",
@@ -196,7 +196,7 @@ hazTitle:"ルート付近の災害情報",hzQuake:"{d}、{p}から{k} kmの地�
 usePick:"受け取り場所に設定",studless:"スタッドレス",askBranch:"店舗にご確認ください",disclaimer:"参考情報であり、保証するものではありません。山間部の状況は急に変わります。また多くの都道府県では、積雪・凍結路で冬用タイヤまたはチェーンの装着が義務付けられています。運転前にレンタカー店舗のタイヤオプションとNEXCOの道路情報を確認してください。",
 cWeather:"天気",cPostal:"郵便番号検索",cNames:"地名",cMap:"地図・ジオコーディング",cHaz:"地震・津波",lyV:"タイヤ判定",lyQ:"地震（7日）",lyVo:"火山",lyS:"レンタカー店舗"},
 de:{title:"Studless Check Japan",lede:"Sie mieten diesen Winter ein Auto in Japan? Geben Sie Postleitzahl oder Ort der Abholung, Ihr Ziel und die Reisedaten ein. Wir prüfen Jahreszeit und aktuelle Wettervorhersage und sagen Ihnen, ob Sie Winterreifen (Studless) dazubuchen sollten.",
-pick:"Abholung",pickHint:"Postleitzahl oder Ort",dest:"Ziel",destHint:"optional · Postleitzahl oder Ort",first:"Erster Tag",last:"Letzter Tag",today:"Heute",thisWeek:"Diese Woche",nextWeek:"Nächste Woche",wk:"KW {n}",
+pick:"Abholung",pickHint:"Postleitzahl oder Ort",dest:"Ziel",destHint:"optional · Postleitzahl oder Ort",first:"Erster Tag",last:"Letzter Tag",today:"Heute",thisWeek:"Nächste 7 Tage",nextWeek:"Nächste Woche",wk:"KW {n}",
 check:"Reise prüfen",checking:"Wird geprüft…",lv2:"Winterreifen Pflicht",lv1:"Winterreifen empfohlen",lv0:"Nicht nötig",
 zHeavy:"einem Schneegebiet",zMountain:"einem Berggebiet",zModerate:"einem Gebiet mit gelegentlichem Schnee",zLow:"einem schneearmen Gebiet",
 rSeason2:"{p} liegt in {z}, und Ihre Reise fällt in die Schneesaison.",rSeason1:"{p} liegt in {z}, wo zu dieser Jahreszeit Schnee und Glätte möglich sind.",
@@ -210,7 +210,7 @@ hazTitle:"Gefahren in der Nähe Ihrer Route",hzQuake:"Erdbeben der Stärke M{m},
 usePick:"Als Abholort verwenden",studless:"Winterreifen",askBranch:"bei der Filiale fragen",disclaimer:"Nur eine Empfehlung, keine Garantie. In den Bergen ändern sich die Bedingungen schnell, und viele Präfekturen schreiben auf verschneiten Straßen Winterreifen oder Schneeketten vor. Prüfen Sie vor der Fahrt die Reifenoptionen Ihrer Mietstation und die Straßenmeldungen von NEXCO.",
 cWeather:"Wetter",cPostal:"Postleitzahlsuche",cNames:"Ortsnamen",cMap:"Karte und Geokodierung",cHaz:"Erdbeben und Tsunami",lyV:"Reifen-Empfehlung",lyQ:"Erdbeben (7 Tage)",lyVo:"Vulkane",lyS:"Mietstationen"},
 es:{title:"Studless Check Japón",lede:"¿Vas a alquilar un coche en Japón este invierno? Introduce el código postal o la ciudad donde lo recoges, adónde vas y cuándo. Revisamos la temporada y el pronóstico en vivo y te decimos si conviene añadir neumáticos de invierno (studless).",
-pick:"Recogida",pickHint:"código postal o ciudad",dest:"Destino",destHint:"opcional · código postal o ciudad",first:"Primer día",last:"Último día",today:"Hoy",thisWeek:"Esta semana",nextWeek:"Próxima semana",wk:"Semana {n}",
+pick:"Recogida",pickHint:"código postal o ciudad",dest:"Destino",destHint:"opcional · código postal o ciudad",first:"Primer día",last:"Último día",today:"Hoy",thisWeek:"Próximos 7 días",nextWeek:"Próxima semana",wk:"Semana {n}",
 check:"Revisar mi viaje",checking:"Revisando…",lv2:"Neumáticos de invierno obligatorios",lv1:"Neumáticos de invierno recomendados",lv0:"No hacen falta",
 zHeavy:"una zona de nieve abundante",zMountain:"una zona de montaña",zModerate:"una zona con nieve ocasional",zLow:"una zona con poca nieve",
 rSeason2:"{p} está en {z} y tus fechas caen en temporada de nieve.",rSeason1:"{p} está en {z} donde puede haber nieve y hielo en esta época del año.",
@@ -385,9 +385,9 @@ function quick(kind){
   const td=iso(new Date()), dow=(new Date().getDay()+6)%7; /* Monday = 0, ISO week */
   let a,b;
   if(kind==="today"){a=td;b=td}
-  else if(kind==="week"){a=td;b=addDays(td,6-dow)}
+  else if(kind==="week"){a=td;b=addDays(td,6)} /* next 7 days, same on any weekday */
   else {a=addDays(td,7-dow);b=addDays(a,6)}
-  $("d1").value=a;$("d2").value=b;showWeeks();drawOverview();
+  $("d1").value=a;$("d2").value=b;$("d2").min=a;tripLen=Math.round((new Date(b)-new Date(a))/864e5);showWeeks();drawOverview();
   if($("pick").value.trim()) run();
 }
 const fmtDay=s=>new Date(s+"T00:00:00").toLocaleDateString(locale(),{weekday:"short",month:"short",day:"numeric"});
@@ -788,7 +788,7 @@ function buildFooter(){
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.4.3';
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.4.6';
 }
 function buildVia(){
   const cur=$("via").value; const groups={};
@@ -821,7 +821,22 @@ $("d1").value=iso(today); $("d2").value=iso(end);
 $("go").addEventListener("click",run);
 document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>quick(b.dataset.q)));
 ["pick","dest"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")run()}));
-["d1","d2"].forEach(id=>$(id).addEventListener("change",()=>{showWeeks();drawOverview()}));
+/* The last day can never be before the first day: the date pickers block earlier days,
+   and moving the first day later carries the last day along, keeping the trip length. */
+let tripLen=Math.max(0,Math.round((new Date($("d2").value)-new Date($("d1").value))/864e5));
+function syncDates(changed){
+  const td=iso(new Date());
+  if($("d1").value&&$("d1").value<td) $("d1").value=td;
+  const a=$("d1").value;
+  if(changed==="d1"&&a){ if(!$("d2").value||$("d2").value<a) $("d2").value=addDays(a,tripLen) }
+  if(changed==="d2"&&a&&$("d2").value&&$("d2").value<a) $("d2").value=a;
+  $("d1").min=td; $("d2").min=a||td;
+  if(a&&$("d2").value) tripLen=Math.round((new Date($("d2").value)-new Date(a))/864e5);
+  showWeeks(); drawOverview();
+}
+$("d1").addEventListener("change",()=>syncDates("d1"));
+$("d2").addEventListener("change",()=>syncDates("d2"));
+$("d1").min=iso(new Date()); $("d2").min=$("d1").value;
 setLang(detectLang());
 drawOverview();
 </script>
