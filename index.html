@@ -114,22 +114,23 @@ footer a{color:inherit}
   .mapwrap{height:70vh}
 }
 .datewrap{position:relative}
-.datebtn{width:100%;font:inherit;text-align:start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:6px;min-height:46px}
+.datebtn{width:100%;font:inherit;text-align:start;padding:10px 10px;white-space:nowrap;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:6px;min-height:46px}
 .datebtn .cw{font-size:.72rem;font-weight:700;color:var(--navy);white-space:nowrap}
-.cal{position:absolute;z-index:1000;top:calc(100% + 6px);width:min(320px,calc(100vw - 40px));background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:10px}
+.cal{position:absolute;z-index:1000;top:calc(100% + 4px);width:min(268px,calc(100vw - 40px));font-size:.82rem;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:8px}
 .cal[hidden]{display:none}
-.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-weight:700}
-.cal-h button{font:inherit;font-size:1.1rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;width:34px;height:34px;cursor:pointer}
-.cal table{width:100%;border-collapse:collapse;font-size:.85rem;table-layout:fixed}
-.cal th,.cal td{text-align:center;padding:2px;border:0;white-space:normal}
-.cal th{color:var(--muted);font-weight:700;font-size:.72rem}
-.cal td.cw,.cal th.cw{color:var(--navy);font-size:.68rem;font-weight:700;border-inline-end:1px solid var(--line);width:12%}
-.cal td button{width:100%;height:34px;font:inherit;border:0;border-radius:6px;background:none;color:var(--ink);cursor:pointer;padding:0}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;font-weight:700;font-size:.85rem}
+.cal-h button{font:inherit;font-size:.95rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;width:26px;height:26px;cursor:pointer;line-height:1}
+.cal table{width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed}
+.cal th,.cal td{text-align:center;padding:1px;border:0;white-space:normal}
+.cal th{color:var(--muted);font-weight:700;font-size:.66rem}
+.cal td.cw,.cal th.cw{color:var(--navy);font-size:.62rem;font-weight:700;border-inline-end:1px solid var(--line);width:12%}
+.cal td button{width:100%;height:26px;font:inherit;border:0;border-radius:6px;background:none;color:var(--ink);cursor:pointer;padding:0}
 .cal td button:hover{background:var(--chip)}
 .cal td button.out{color:var(--muted)}
 .cal td button.inr{background:var(--chip)}
 .cal td button.sel{background:var(--orange);color:#fff;font-weight:700}
 .cal td button.today{box-shadow:inset 0 0 0 2px var(--navy)}
+.cal-f{margin-top:4px;font-size:.72rem;color:var(--muted);text-align:center}
 .cal td button:disabled{opacity:.3;cursor:not-allowed;background:none}
 @media (prefers-color-scheme:dark){.datebtn .cw,.cal td.cw,.cal th.cw{color:var(--gold)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -264,6 +265,10 @@ de:{profTitle:"Höhenprofil der Route",profNote:"Gerade Linien zwischen Ihren Pu
 es:{profTitle:"Perfil de altitud de la ruta",profNote:"Líneas rectas entre tus puntos, no la carretera en sí. Altitudes del modelo del terreno.",lyT:"Sombreado del relieve"}
 };
 for(const l in I18N_V143) Object.assign(I18N[l],I18N_V143[l]);
+Object.assign(I18N.en,{pickFirst:"Tap the first day",pickLast:"Now tap the last day"});
+Object.assign(I18N.ja,{pickFirst:"初日を選んでください",pickLast:"次に最終日を選んでください"});
+Object.assign(I18N.de,{pickFirst:"Ersten Tag wählen",pickLast:"Jetzt den letzten Tag wählen"});
+Object.assign(I18N.es,{pickFirst:"Elige el primer día",pickLast:"Ahora elige el último día"});
 Object.assign(I18N.en,{cwShort:"CW",prevMonth:"Previous month",nextMonth:"Next month"});
 Object.assign(I18N.ja,{cwShort:"週",prevMonth:"前の月",nextMonth:"次の月"});
 Object.assign(I18N.de,{cwShort:"KW",prevMonth:"Vorheriger Monat",nextMonth:"Nächster Monat"});
@@ -1006,7 +1011,7 @@ function buildFooter(){
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.4';
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.6';
 }
 function setLang(code){
   lang=I18N[code]?code:"en";
@@ -1038,14 +1043,14 @@ $("route").addEventListener("change",()=>{ if($("pick").value.trim()&&$("dest").
    and moving the first day later carries the last day along, keeping the trip length. */
 let tripLen=Math.max(0,Math.round((new Date($("d2").value)-new Date($("d1").value))/864e5));
 /* ---- Calendar with ISO calendar weeks (CW/KW) on the left; weeks start Monday ---- */
-let calFor=null, calMonth=null;
-const fmtLong=s=>new Date(s+"T00:00:00").toLocaleDateString(locale(),{weekday:"short",year:"numeric",month:"short",day:"numeric"});
+let calFor=null, calMonth=null, calMode="start";
+const fmtLong=s=>new Date(s+"T00:00:00").toLocaleDateString(locale(),s.slice(0,4)===jpToday().slice(0,4)?{weekday:"short",month:"short",day:"numeric"}:{weekday:"short",year:"numeric",month:"short",day:"numeric"});
 function paintDates(){
   for(const id of ["d1","d2"]){const v=$(id).value;
     $(id+"b").innerHTML=v?`<span>${esc(fmtLong(v))}</span><span class="cw">${esc(t("cwShort"))} ${isoWeek(v)}</span>`:"–"}
 }
 function openCal(id){
-  calFor=id; calMonth=($(id).value||jpToday()).slice(0,7);
+  calFor=id; calMode=id==="d2"?"end":"start"; calMonth=($(id).value||jpToday()).slice(0,7);
   const c=$("cal"); $(id+"b").parentElement.appendChild(c);
   c.style.left=id==="d2"?"auto":"0"; c.style.right=id==="d2"?"0":"auto";
   c.hidden=false; drawCal();
@@ -1054,31 +1059,40 @@ function closeCal(){ $("cal").hidden=true; calFor=null }
 function drawCal(){
   const [y,m]=calMonth.split("-").map(Number), first=new Date(y,m-1,1);
   const d=new Date(y,m-1,1-((first.getDay()+6)%7));
-  const min=calFor==="d2"?($("d1").value||jpToday()):jpToday();
-  const a=$("d1").value,b=$("d2").value,td=jpToday(),sel=$(calFor).value;
+  const min=jpToday();  /* any day from today in Japan */
+  const a=$("d1").value,b=$("d2").value,td=jpToday();
   const wd=[...Array(7)].map((_,i)=>new Date(2026,0,5+i).toLocaleDateString(locale(),{weekday:"narrow"}));
   let h=`<div class="cal-h"><button type="button" data-nav="-1" aria-label="${esc(t("prevMonth"))}">‹</button><span>${esc(first.toLocaleDateString(locale(),{year:"numeric",month:"long"}))}</span><button type="button" data-nav="1" aria-label="${esc(t("nextMonth"))}">›</button></div>`;
   h+=`<table><thead><tr><th class="cw">${esc(t("cwShort"))}</th>${wd.map(w=>`<th>${esc(w)}</th>`).join("")}</tr></thead><tbody>`;
   for(let r=0;r<6;r++){
     h+=`<tr><td class="cw">${isoWeek(iso(d))}</td>`;
     for(let c=0;c<7;c++){
-      const s=iso(d), cls=[d.getMonth()!==m-1?"out":"", s===sel?"sel":"", (a&&b&&s>=a&&s<=b&&s!==sel)?"inr":"", s===td?"today":""].join(" ").trim();
+      const s=iso(d), ends=(s===a||s===b), cls=[d.getMonth()!==m-1?"out":"", ends?"sel":"", (a&&b&&s>a&&s<b)?"inr":"", s===td?"today":""].join(" ").trim();
       h+=`<td><button type="button" data-day="${s}" class="${cls}" ${s<min?"disabled":""}>${d.getDate()}</button></td>`;
       d.setDate(d.getDate()+1);
     }
     h+="</tr>";
     if(d.getFullYear()*12+d.getMonth()>y*12+m-1) break;
   }
-  $("cal").innerHTML=h+"</tbody></table>";
+  $("cal").innerHTML=h+`</tbody></table><div class="cal-f">${esc(t(calMode==="start"?"pickFirst":"pickLast"))}</div>`;
 }
 $("cal").addEventListener("click",e=>{
   const n=e.target.closest("[data-nav]");
   if(n){const [y,m]=calMonth.split("-").map(Number); calMonth=iso(new Date(y,m-1+(+n.dataset.nav),1)).slice(0,7); drawCal(); return}
   const b=e.target.closest("[data-day]");
-  if(b&&!b.disabled){const id=calFor; $(id).value=b.dataset.day; closeCal(); syncDates(id); $(id+"b").focus()}
+  if(b&&!b.disabled){
+    const day=b.dataset.day;
+    if(calMode==="start"||day<$("d1").value){
+      /* new start: keep the trip length if the end would now be before the start */
+      $("d1").value=day; if(!$("d2").value||$("d2").value<day) $("d2").value=day;
+      calMode="end"; syncDates(null); drawCal();
+    } else {
+      $("d2").value=day; const id=calFor; closeCal(); syncDates(null); $(id+"b").focus();
+    }
+  }
 });
 ["d1","d2"].forEach(id=>$(id+"b").addEventListener("click",()=>{ if(calFor===id&&!$("cal").hidden) closeCal(); else openCal(id) }));
-document.addEventListener("click",e=>{ if(!$("cal").hidden&&!e.target.closest(".cal")&&!e.target.closest(".datebtn")) closeCal() });
+document.addEventListener("click",e=>{ if(!$("cal").hidden&&!e.composedPath().some(n=>n.classList&&(n.classList.contains("cal")||n.classList.contains("datebtn")))) closeCal() });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("cal").hidden){const id=calFor; closeCal(); $(id+"b").focus()} });
 function syncDates(changed){
   const td=jpToday();
