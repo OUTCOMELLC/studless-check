@@ -54,7 +54,15 @@ input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid 
 .jptime{font-size:.8rem;color:var(--muted);margin-top:6px}
 .weeks{margin-inline-start:auto;font-size:.85rem;font-weight:700;color:var(--navy)}
 @media (prefers-color-scheme:dark){.weeks{color:var(--gold)}}
-button.go{margin-top:16px;width:100%;font:inherit;font-weight:700;padding:12px;border:0;border-radius:8px;background:var(--orange);color:#fff;cursor:pointer}
+.actions{display:flex;gap:8px;margin-top:16px}
+button.reset{font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap}
+button.reset:hover{border-color:var(--navy)}
+.inwrap{position:relative}
+.inwrap input{padding-inline-end:38px}
+.clr{position:absolute;inset-inline-end:7px;top:50%;transform:translateY(-50%);width:26px;height:26px;border:0;border-radius:50%;background:var(--chip);color:var(--muted);cursor:pointer;font-size:1.05rem;line-height:1;padding:0}
+.clr:hover{color:var(--ink)}
+.clr[hidden]{display:none}
+button.go{flex:1;font:inherit;font-weight:700;padding:12px;border:0;border-radius:8px;background:var(--orange);color:#fff;cursor:pointer}
 button.go:disabled{opacity:.6;cursor:wait}
 .err{color:var(--red);font-size:.9rem;margin-top:10px;min-height:1em}
 
@@ -147,9 +155,9 @@ footer a{color:inherit}
   <p class="lede" data-i18n="lede"></p>
 
   <label for="pick"><span data-i18n="pick"></span> <span class="hint" data-i18n="pickHint"></span></label>
-  <input id="pick" autocomplete="off" placeholder="060-0806 · Sapporo · 札幌">
+  <div class="inwrap"><input id="pick" autocomplete="off" placeholder="060-0806 · Sapporo · 札幌"><button type="button" class="clr" data-clr="pick" hidden>×</button></div>
   <label for="dest"><span data-i18n="dest"></span> <span class="hint" data-i18n="destHint"></span></label>
-  <input id="dest" autocomplete="off" placeholder="Hakuba · 白馬村 · 399-9301">
+  <div class="inwrap"><input id="dest" autocomplete="off" placeholder="Hakuba · 白馬村 · 399-9301"><button type="button" class="clr" data-clr="dest" hidden>×</button></div>
   <label class="chk"><input type="checkbox" id="route" checked> <span data-i18n="routeToggle"></span></label>
   <div class="row">
     <div class="datewrap"><label for="d1b" data-i18n="first"></label><input id="d1" type="hidden"><button type="button" class="datebtn" id="d1b" aria-haspopup="dialog"></button>
@@ -163,7 +171,7 @@ footer a{color:inherit}
     <span class="weeks" id="weeks"></span>
   </div>
   <div class="jptime" id="jptime"></div>
-  <button class="go" id="go" data-i18n="check"></button>
+  <div class="actions"><button class="go" id="go" data-i18n="check"></button><button type="button" class="reset" id="reset" data-i18n="newCheck"></button></div>
   <div class="err" id="err" role="alert"></div>
 
   <div id="out" aria-live="polite"></div>
@@ -265,6 +273,10 @@ de:{profTitle:"Höhenprofil der Route",profNote:"Gerade Linien zwischen Ihren Pu
 es:{profTitle:"Perfil de altitud de la ruta",profNote:"Líneas rectas entre tus puntos, no la carretera en sí. Altitudes del modelo del terreno.",lyT:"Sombreado del relieve"}
 };
 for(const l in I18N_V143) Object.assign(I18N[l],I18N_V143[l]);
+Object.assign(I18N.en,{newCheck:"New check"});
+Object.assign(I18N.ja,{newCheck:"新しいチェック"});
+Object.assign(I18N.de,{newCheck:"Neue Prüfung"});
+Object.assign(I18N.es,{newCheck:"Nueva consulta"});
 Object.assign(I18N.en,{pickFirst:"Tap the first day",pickLast:"Now tap the last day"});
 Object.assign(I18N.ja,{pickFirst:"初日を選んでください",pickLast:"次に最終日を選んでください"});
 Object.assign(I18N.de,{pickFirst:"Ersten Tag wählen",pickLast:"Jetzt den letzten Tag wählen"});
@@ -1002,7 +1014,7 @@ fetch("stores.json").then(r=>r.ok?r.json():[]).then(list=>{
   });
 }).catch(()=>{});
 map.on("popupopen",e=>{const b=e.popup.getElement().querySelector(".popbtn"); if(!b) return;
-  b.onclick=()=>{ $("pick").value=b.dataset.zip; $("pick").focus(); map.closePopup() }});
+  b.onclick=()=>{ $("pick").value=b.dataset.zip; syncClr("pick"); $("pick").focus(); map.closePopup() }});
 
 /* ================= Language switching ================= */
 function buildFooter(){
@@ -1011,7 +1023,7 @@ function buildFooter(){
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.6';
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.7';
 }
 function setLang(code){
   lang=I18N[code]?code:"en";
@@ -1038,6 +1050,17 @@ $("d1").value=startJP; $("d2").value=addDays(startJP,3);
 $("go").addEventListener("click",run);
 document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>quick(b.dataset.q)));
 ["pick","dest"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")run()}));
+/* Clear buttons: × in each place field, and "New check" for the next customer */
+function clearResult(){ $("out").innerHTML=""; $("err").textContent=""; lastRun=null; tripLayer.clearLayers() }
+function syncClr(id){ document.querySelector(`[data-clr="${id}"]`).hidden=!$(id).value }
+["pick","dest"].forEach(id=>{ $(id).addEventListener("input",()=>syncClr(id)); syncClr(id) });
+document.querySelectorAll("[data-clr]").forEach(b=>b.addEventListener("click",()=>{ const id=b.dataset.clr; $(id).value=""; syncClr(id); clearResult(); $(id).focus() }));
+$("reset").addEventListener("click",()=>{
+  ["pick","dest"].forEach(id=>{ $(id).value=""; syncClr(id) });
+  clearResult(); closeCal();
+  const td=jpToday(); $("d1").value=td; $("d2").value=addDays(td,3); tripLen=3; syncDates(null);
+  map.setView([37.2,137.5],5); $("pick").focus();
+});
 $("route").addEventListener("change",()=>{ if($("pick").value.trim()&&$("dest").value.trim()) run() });
 /* The last day can never be before the first day: the date pickers block earlier days,
    and moving the first day later carries the last day along, keeping the trip length. */
