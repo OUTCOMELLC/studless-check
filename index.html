@@ -51,6 +51,7 @@ input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid 
 .quick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
 .quick button{font:inherit;font-size:.85rem;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--chip);color:var(--ink);cursor:pointer}
 .quick button:hover{border-color:var(--navy)}
+.jptime{font-size:.8rem;color:var(--muted);margin-top:6px}
 .weeks{margin-inline-start:auto;font-size:.85rem;font-weight:700;color:var(--navy)}
 @media (prefers-color-scheme:dark){.weeks{color:var(--gold)}}
 button.go{margin-top:16px;width:100%;font:inherit;font-weight:700;padding:12px;border:0;border-radius:8px;background:var(--orange);color:#fff;cursor:pointer}
@@ -81,6 +82,8 @@ tr.wk td{font-weight:700;color:var(--navy);background:var(--chip);border-bottom:
 .d2{background:var(--red)}.d1{background:var(--amber)}.d0{background:var(--green)}.dn{background:var(--grey)}
 .sq{display:inline-block;width:10px;height:10px;background:var(--gold);border:1.5px solid var(--navy);vertical-align:middle}
 .dia{display:inline-block;width:9px;height:9px;background:var(--navy);border:1.5px solid #fff;outline:1px solid var(--navy);transform:rotate(45deg);vertical-align:middle}
+.chk{display:flex;gap:8px;align-items:center;font-weight:400;margin-top:14px;cursor:pointer}
+.chk input{width:18px;height:18px;margin:0;accent-color:var(--orange)}
 select.wide{width:100%;max-width:none;padding:10px 12px;font-size:1rem}
 .obs{font-size:.8rem;color:var(--red);font-weight:700}
 .profile{margin:4px 0 14px}
@@ -125,8 +128,7 @@ footer a{color:inherit}
   <input id="pick" autocomplete="off" placeholder="060-0806 · Sapporo · 札幌">
   <label for="dest"><span data-i18n="dest"></span> <span class="hint" data-i18n="destHint"></span></label>
   <input id="dest" autocomplete="off" placeholder="Hakuba · 白馬村 · 399-9301">
-  <label for="via"><span data-i18n="via"></span> <span class="hint" data-i18n="viaHint"></span></label>
-  <select id="via" class="wide"></select>
+  <label class="chk"><input type="checkbox" id="route" checked> <span data-i18n="routeToggle"></span></label>
   <div class="row">
     <div><label for="d1" data-i18n="first"></label><input id="d1" type="date"></div>
     <div><label for="d2" data-i18n="last"></label><input id="d2" type="date"></div>
@@ -137,6 +139,7 @@ footer a{color:inherit}
     <button type="button" data-q="next" data-i18n="nextWeek"></button>
     <span class="weeks" id="weeks"></span>
   </div>
+  <div class="jptime" id="jptime"></div>
   <button class="go" id="go" data-i18n="check"></button>
   <div class="err" id="err" role="alert"></div>
 
@@ -238,6 +241,22 @@ de:{profTitle:"Höhenprofil der Route",profNote:"Gerade Linien zwischen Ihren Pu
 es:{profTitle:"Perfil de altitud de la ruta",profNote:"Líneas rectas entre tus puntos, no la carretera en sí. Altitudes del modelo del terreno.",lyT:"Sombreado del relieve"}
 };
 for(const l in I18N_V143) Object.assign(I18N[l],I18N_V143[l]);
+Object.assign(I18N.en,{routeToggle:"Check the roads in between (mountain passes)",altRoad:"possible alternative road",passNote:"Based on the main expressways and national roads between pickup and destination. Back roads are not covered.",profNote:"Follows the main roads between your points; heights from the terrain model."});
+Object.assign(I18N.ja,{routeToggle:"途中の道路（峠）もチェック",altRoad:"別ルートの可能性",passNote:"受け取り場所と行き先の間の主要な高速道路・国道に基づいています。裏道は対象外です。",profNote:"地点間の主要道路に沿った断面です。標高は地形データによります。"});
+Object.assign(I18N.de,{routeToggle:"Straßen dazwischen prüfen (Bergpässe)",altRoad:"mögliche Alternativroute",passNote:"Basierend auf den wichtigsten Autobahnen und Nationalstraßen zwischen Abholung und Ziel. Nebenstraßen sind nicht berücksichtigt.",profNote:"Folgt den Hauptstraßen zwischen Ihren Punkten; Höhen aus dem Geländemodell."});
+Object.assign(I18N.es,{routeToggle:"Revisar las carreteras intermedias (puertos de montaña)",altRoad:"posible ruta alternativa",passNote:"Basado en las principales autopistas y carreteras nacionales entre la recogida y el destino. No incluye carreteras secundarias.",profNote:"Sigue las carreteras principales entre tus puntos; altitudes del modelo del terreno."});
+Object.assign(I18N.en,{fcUpd:"Forecast updated {d} JST."});
+Object.assign(I18N.ja,{fcUpd:"予報更新：{d}（日本時間）"});
+Object.assign(I18N.de,{fcUpd:"Vorhersage aktualisiert {d} JST."});
+Object.assign(I18N.es,{fcUpd:"Pronóstico actualizado {d} JST."});
+Object.assign(I18N.en,{jpTime:"Dates are in Japan time. Now in Japan: {d}"});
+Object.assign(I18N.ja,{jpTime:"日付は日本時間です。現在の日本時間：{d}"});
+Object.assign(I18N.de,{jpTime:"Alle Daten in japanischer Zeit. Jetzt in Japan: {d}"});
+Object.assign(I18N.es,{jpTime:"Las fechas están en hora de Japón. Ahora en Japón: {d}"});
+Object.assign(I18N.en,{eBusy:"The free weather service is getting too many requests right now. Wait a minute and try again."});
+Object.assign(I18N.ja,{eBusy:"無料の天気サービスへのアクセスが集中しています。1分ほど待ってから再度お試しください。"});
+Object.assign(I18N.de,{eBusy:"Der kostenlose Wetterdienst erhält gerade zu viele Anfragen. Bitte warten Sie eine Minute und versuchen Sie es erneut."});
+Object.assign(I18N.es,{eBusy:"El servicio meteorológico gratuito está recibiendo demasiadas solicitudes. Espera un minuto e inténtalo de nuevo."});
 let lang="en";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -333,13 +352,95 @@ const PICKUPS=[
  [["obihiro airport","帯広空港"],"Obihiro Airport 帯広空港","北海道",42.733,143.217]
 ].map(p=>({keys:p[0],label:p[1],pref:p[2],lat:p[3],lon:p[4]}));
 /* Passes within 25 km of the straight line between two points */
-function passesBetween(a,b){
+function passesBetween(a,b,radius=25){
   const ml=(a.lat+b.lat)/2*Math.PI/180, X=p=>p.lon*Math.cos(ml)*111.32, Y=p=>p.lat*110.57;
   const ax=X(a),ay=Y(a),dx=X(b)-ax,dy=Y(b)-ay,L2=dx*dx+dy*dy;
   if(L2<1) return [];
   return PASSES.map(p=>{const u=((X(p)-ax)*dx+(Y(p)-ay)*dy)/L2; if(u<0||u>1) return null;
-    const ex=ax+u*dx-X(p), ey=ay+u*dy-Y(p); return Math.hypot(ex,ey)<=25?{p,u}:null})
+    const ex=ax+u*dx-X(p), ey=ay+u*dy-Y(p); return Math.hypot(ex,ey)<=radius?{p,u}:null})
    .filter(Boolean).sort((x,y)=>x.u-y.u).slice(0,4).map(x=>x.p);
+}
+/* ---- Built-in road map: main expressways and national roads as junctions and links.
+   Coordinates approximate. A link can carry the mountain pass it crosses (matched by name). ---- */
+const RNODES={
+ SAP:[43.064,141.347],CTS:[42.80,141.68],OTA:[43.19,141.00],NIS:[42.90,140.76],HAK:[41.77,140.73],OSH:[42.51,140.37],TOM:[42.63,141.60],
+ ASA:[43.77,142.37],FUR:[43.34,142.38],OBI:[42.92,143.20],KUS:[42.98,144.38],KIT:[43.80,143.90],WAK:[45.42,141.67],
+ AOM:[40.82,140.74],HIR:[40.60,140.46],TOW:[40.61,141.21],HAC:[40.51,141.49],MOR:[39.70,141.15],AKI:[39.72,140.10],SEN:[38.27,140.87],
+ YMG:[38.24,140.36],FKS:[37.75,140.47],KOR:[37.40,140.38],AIZ:[37.49,139.93],NII:[37.90,139.02],IWK:[37.05,140.89],
+ UTS:[36.57,139.88],NIK:[36.72,139.70],MIT:[36.34,140.45],TKY:[35.68,139.77],NRT:[35.77,140.39],YOK:[35.45,139.64],TAK:[36.32,139.00],
+ YUZ:[36.93,138.82],NGK:[37.45,138.85],KAR:[36.35,138.60],NGN:[36.65,138.18],JOE:[37.15,138.24],KOF:[35.66,138.57],FJK:[35.50,138.76],
+ SUW:[36.06,138.08],MTM:[36.24,137.97],HKB:[36.70,137.86],TKYM:[36.15,137.25],ODA:[35.26,139.15],MSH:[35.12,138.92],GTB:[35.30,138.93],
+ SZK:[34.98,138.38],HAM:[34.71,137.73],NGY:[35.17,136.91],GUJ:[35.75,136.96],HRG:[35.98,136.93],SHR:[36.26,136.91],TYM:[36.70,137.21],
+ KNZ:[36.56,136.65],FKI:[36.06,136.22],TSU:[35.65,136.06],MAI:[35.31,136.29],SKG:[35.36,136.47],KYO:[34.99,135.76],KMY:[34.85,136.45],
+ OSA:[34.70,135.50],KOB:[34.69,135.18],HIM:[34.82,134.69],OKY:[34.66,133.93],ONO:[34.41,133.20],HRS:[34.40,132.46],YMGU:[34.18,131.47],
+ SHM:[33.96,130.94],KKR:[33.88,130.88],FUK:[33.59,130.42],TSY:[35.07,134.00],OCH:[35.02,133.75],YNG:[35.43,133.33],MTE:[35.47,133.05],
+ TTR:[35.50,134.24],SHO:[34.86,133.02],HMD:[34.90,132.08],TKM:[34.34,134.04],TOK:[34.07,134.56],IMB:[34.07,133.00],MTY:[33.84,132.77],
+ KWN:[33.98,133.57],KOC:[33.56,133.53],UWA:[33.22,132.56],KRM:[33.32,130.51],KUM:[32.80,130.71],HTY:[32.21,130.76],EBN:[32.05,130.81],
+ KAG:[31.60,130.56],MYZ:[31.91,131.42],SAG:[33.26,130.30],NGS:[32.75,129.87],OIT:[33.24,131.61],YUF:[33.27,131.37],ASO:[32.95,131.10]
+};
+const SLOW_PASSES=["中山峠","狩勝峠","石北峠","三国峠 (Hokkaido)","八甲田","関山峠","箱根峠","籠坂峠","安房峠","阿蘇ミルクロード","牧ノ戸峠"];
+const REDGES=[
+ ["SAP","OTA"],["OTA","NIS"],["SAP","NIS","中山峠"],["NIS","OSH"],["OSH","HAK"],["OSH","TOM"],["TOM","CTS"],["CTS","SAP"],["SAP","ASA"],
+ ["ASA","FUR"],["FUR","OBI","狩勝峠"],["CTS","OBI","日勝峠"],["OBI","KUS"],["ASA","KIT","石北峠"],["OBI","ASA","三国峠 (Hokkaido)"],["KIT","KUS"],["ASA","WAK"],
+ ["AOM","HIR"],["AOM","TOW","八甲田"],["TOW","HAC"],["HIR","MOR"],["HAC","MOR"],["MOR","AKI"],["MOR","SEN"],["SEN","YMG","関山峠"],["AKI","YMG"],
+ ["SEN","FKS"],["FKS","YMG"],["FKS","KOR"],["KOR","AIZ","磐越道"],["AIZ","NII"],["KOR","IWK"],
+ ["KOR","UTS"],["UTS","NIK"],["UTS","TKY"],["IWK","MIT"],["MIT","TKY"],["NRT","TKY"],["TKY","YOK"],["TKY","TAK"],["TAK","YUZ","関越道"],["YUZ","NGK"],
+ ["NGK","NII"],["TAK","KAR","碓氷峠"],["KAR","NGN"],["NGN","JOE","上信越道"],["JOE","NGK"],["TKY","KOF","中央道 笹子"],["TKY","FJK"],["KOF","FJK"],
+ ["KOF","SUW"],["SUW","MTM","塩尻峠"],["MTM","NGN"],["SUW","NGY"],["MTM","HKB"],["NGN","HKB"],["MTM","TKYM","安房峠"],["YOK","ODA"],["ODA","MSH","箱根峠"],
+ ["TKY","GTB"],["GTB","FJK","籠坂峠"],["GTB","SZK"],["MSH","SZK"],["SZK","HAM"],["HAM","NGY"],
+ ["NGY","GUJ"],["GUJ","HRG","松ノ木峠"],["HRG","TKYM"],["HRG","SHR"],["SHR","TYM"],["JOE","TYM"],["TYM","KNZ"],["KNZ","FKI"],["FKI","TSU","木ノ芽"],
+ ["TSU","MAI"],["TSU","KYO"],["NGY","SKG","関ケ原"],["SKG","MAI"],["MAI","KYO"],["NGY","KMY"],["KMY","OSA"],["KYO","OSA"],
+ ["OSA","KOB"],["KOB","HIM"],["HIM","OKY"],["OKY","ONO"],["ONO","HRS"],["HRS","YMGU"],["YMGU","SHM"],["SHM","KKR"],["KKR","FUK"],
+ ["OSA","TSY"],["HIM","TSY"],["TSY","OCH"],["OCH","OKY"],["OCH","YNG","蒜山"],["YNG","MTE"],["YNG","TTR"],["TTR","TSY"],["OCH","SHO"],["SHO","HRS"],
+ ["SHO","MTE"],["HRS","HMD","芸北"],
+ ["OKY","TKM"],["KOB","TOK"],["ONO","IMB"],["IMB","MTY"],["TKM","KWN"],["TOK","KWN"],["KWN","MTY"],["KWN","KOC","大豊"],["MTY","UWA"],
+ ["FUK","KRM"],["KRM","KUM"],["KUM","HTY"],["HTY","EBN","加久藤"],["EBN","KAG"],["EBN","MYZ"],["KRM","SAG"],["SAG","NGS"],["KKR","OIT"],
+ ["KRM","YUF"],["YUF","OIT"],["KUM","ASO","阿蘇ミルクロード"],["ASO","YUF","牧ノ戸峠"],["ASO","OIT"],["MYZ","OIT"]
+].map(([a,b,p])=>({a,b,p:p?PASSES.find(x=>x.name.includes(p))||null:null,
+  /* winding mountain national roads count 40% slower than expressways, as car navigation does */
+  w:kmBetween(RNODES[a][0],RNODES[a][1],RNODES[b][0],RNODES[b][1])*(p&&SLOW_PASSES.includes(p)?1.4:1)}));
+function shortest(adj,src){
+  const d={[src]:0},prev={},done=new Set();
+  for(;;){
+    let u=null,bd=Infinity; for(const k in d) if(!done.has(k)&&d[k]<bd){bd=d[k];u=k}
+    if(u==null) break; done.add(u);
+    for(const e of adj[u]||[]){const nd=bd+e.w; if(nd<(d[e.to]??Infinity)){d[e.to]=nd;prev[e.to]={from:u,edge:e.edge}}}
+  }
+  return {d,prev};
+}
+/* Shortest road route between two places. Also returns passes on near-equal alternatives (within 10%). */
+function routeTrip(A,B){
+  const adj={}, add=(u,v,w,edge)=>{(adj[u]=adj[u]||[]).push({to:v,w,edge});(adj[v]=adj[v]||[]).push({to:u,w,edge})};
+  for(const e of REDGES) add(e.a,e.b,e.w,e);
+  const pos=k=>k==="@A"?A:k==="@B"?B:{lat:RNODES[k][0],lon:RNODES[k][1]};
+  const near=P=>Object.keys(RNODES).map(k=>({k,km:kmBetween(P.lat,P.lon,RNODES[k][0],RNODES[k][1])})).filter(x=>x.km<=150).sort((x,y)=>x.km-y.km).slice(0,3);
+  for(const [id,P] of [["@A",A],["@B",B]]) for(const n of near(P)) add(id,n.k,n.km*1.3,{a:id,b:n.k,access:true});
+  const direct=kmBetween(A.lat,A.lon,B.lat,B.lon);
+  if(direct<=30) add("@A","@B",direct*1.3,{a:"@A",b:"@B",access:true});
+  const S=shortest(adj,"@A"); if(S.d["@B"]==null) return null;
+  const T=shortest(adj,"@B"), best=S.d["@B"];
+  const path=["@B"], used=new Set(); while(path[0]!=="@A"){const pr=S.prev[path[0]]; used.add(pr.edge); path.unshift(pr.from)}
+  const line=[], passes=[];
+  path.forEach((k,i)=>{
+    if(i>0){const e=S.prev[k].edge; if(e.p&&!passes.includes(e.p)){passes.push(e.p); line.push({lat:e.p.lat,lon:e.p.lon,pass:e.p})}}
+    line.push({...pos(k),node:k});
+  });
+  /* local roads to and from the expressway */
+  [[path[0],path[1],1],[path[path.length-2],path[path.length-1],-1]].forEach(([u,v,at])=>{
+    for(const p of passesBetween(pos(u),pos(v),15)) if(!passes.includes(p)){
+      passes.push(p); const q={lat:p.lat,lon:p.lon,pass:p};
+      if(at===1) line.splice(1,0,q); else line.splice(line.length-1,0,q);
+    }
+  });
+  /* Up to 2 passes on alternative roads that are almost as short */
+  const altC=[];
+  for(const e of REDGES){
+    if(!e.p||used.has(e)||passes.includes(e.p)) continue;
+    const c=Math.min((S.d[e.a]??Infinity)+e.w+(T.d[e.b]??Infinity),(S.d[e.b]??Infinity)+e.w+(T.d[e.a]??Infinity));
+    if(c-best<=Math.min(best*0.06,12)) altC.push({p:e.p,c});  /* at most 6% and 12 km longer */
+  }
+  const alt=altC.sort((x,y)=>x.c-y.c).filter((x,i,arr)=>arr.findIndex(y=>y.p===x.p)===i).slice(0,2).map(x=>x.p);
+  return {line,passes,alt,km:best};
 }
 const ZKEY={heavy:"zHeavy",mountain:"zMountain",moderate:"zModerate",low:"zLow"};
 /* Volcanoes on the four main islands, from the Outcome Pacific Ring of Fire Hazard Map */
@@ -372,6 +473,10 @@ function zoneFor(lat,lon,pref,elev){
 /* ================= Dates & calendar weeks ================= */
 const pad=n=>String(n).padStart(2,"0");
 const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+/* All trip dates follow Japan time (JST, UTC+9), wherever the visitor is */
+const JP_TZ="Asia/Tokyo";
+const jpToday=()=>new Intl.DateTimeFormat("en-CA",{timeZone:JP_TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+const jpDow=()=>(new Date(jpToday()+"T00:00:00").getDay()+6)%7; /* Monday = 0 */
 const addDays=(s,n)=>{const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d)};
 function tripDays(a,b){const out=[];let d=new Date(a+"T00:00:00");const e=new Date(b+"T00:00:00");while(d<=e&&out.length<60){out.push(iso(d));d.setDate(d.getDate()+1)}return out}
 function isoWeek(s){const d=new Date(s+"T00:00:00");const u=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=u.getUTCDay()||7;u.setUTCDate(u.getUTCDate()+4-day);const y0=new Date(Date.UTC(u.getUTCFullYear(),0,1));return Math.ceil(((u-y0)/864e5+1)/7)}
@@ -382,7 +487,7 @@ function showWeeks(){
   $("weeks").textContent= wa===wb ? t("wk",{n:wa}) : t("wk",{n:wa})+" – "+t("wk",{n:wb});
 }
 function quick(kind){
-  const td=iso(new Date()), dow=(new Date().getDay()+6)%7; /* Monday = 0, ISO week */
+  const td=jpToday(), dow=jpDow(); /* Monday = 0, ISO week, Japan date */
   let a,b;
   if(kind==="today"){a=td;b=td}
   else if(kind==="week"){a=td;b=addDays(td,6)} /* next 7 days, same on any weekday */
@@ -394,10 +499,76 @@ const fmtDay=s=>new Date(s+"T00:00:00").toLocaleDateString(locale(),{weekday:"sh
 
 /* ================= Data sources ================= */
 const FC_URL="https://api.open-meteo.com/v1/forecast?daily=temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Asia%2FTokyo&forecast_days=16";
+/* Forecasts are cached for 1 hour (memory + this browser), so changing dates, languages or
+   reloading the page does not call the free weather service again. Each location in a request
+   counts against Open-Meteo's free limits (per minute / hour / day), so repeat calls add up fast. */
+const FC_TTL=36e5, FC_MEM={};
 async function forecast(lats,lons){
-  let r; try{ r=await fetch(FC_URL+"&latitude="+lats.join(",")+"&longitude="+lons.join(",")); }catch(e){ throw new AppErr("eForecast") }
-  if(!r.ok) throw new AppErr("eForecast");
-  const j=await r.json(); return Array.isArray(j)?j:[j];
+  const url=FC_URL+"&latitude="+lats.join(",")+"&longitude="+lons.join(",");
+  const now=Date.now();
+  if(FC_MEM[url]&&now-FC_MEM[url].t<FC_TTL) return FC_MEM[url].d;
+  const key="fc:"+url.length+":"+lats.join(",").slice(0,60)+"|"+lons.join(",").slice(0,60)+"|"+lats.length;
+  try{const c=JSON.parse(localStorage.getItem(key)||"null"); if(c&&now-c.t<FC_TTL){FC_MEM[url]=c; return c.d}}catch(e){}
+  let r=null;
+  for(let attempt=0;attempt<2;attempt++){
+    try{ r=await fetch(url); }catch(e){ r=null }
+    if(r&&r.ok) break;
+    if(r&&r.status===429) throw new AppErr("eBusy");
+    await new Promise(res=>setTimeout(res,1500));
+  }
+  if(!r||!r.ok) throw new AppErr("eForecast");
+  const j=await r.json(); const d=Array.isArray(j)?j:[j];
+  FC_MEM[url]={t:now,d};
+  try{localStorage.setItem(key,JSON.stringify({t:now,d}))}catch(e){}
+  return d;
+}
+/* ---- Shared forecast: data/forecast.json, refreshed every 6 hours by a GitHub Action.
+   Every visitor reads the same file, so weather calls do not grow with traffic.
+   Falls back to live calls only if the file is missing or older than 18 hours. ---- */
+const SHARED_MAX_AGE=18*36e5;
+async function loadShared(){
+  const urls=["data/forecast.json"];
+  const m=location.hostname.match(/^([^.]+)\.github\.io$/i), repo=location.pathname.split("/").filter(Boolean)[0];
+  if(m&&repo) urls.push("https://raw.githubusercontent.com/"+m[1]+"/"+repo+"/main/data/forecast.json");
+  for(const u of urls){
+    try{
+      const r=await fetch(u,{cache:"no-cache"}); if(!r.ok) continue;
+      const j=await r.json();
+      if(j&&Array.isArray(j.pts)&&j.pts.length>100&&Date.now()-Date.parse(j.generated)<SHARED_MAX_AGE) return j;
+    }catch(e){}
+  }
+  return null;
+}
+const sharedReady=loadShared();
+function nearestRow(S,lat,lon,elev){
+  let best=null,bs=1e9,bk=0;
+  for(const p of S.pts){const k=kmBetween(lat,lon,p[0],p[1]), s=k+(elev!=null?Math.abs(elev-p[2])/50:0); if(s<bs){bs=s;best=p;bk=k}}
+  return {row:best,km:bk};
+}
+/* Same shape as an Open-Meteo answer; temperature corrected for height (0.65 °C per 100 m) */
+function sharedFc(S,lat,lon,elev){
+  const {row}=nearestRow(S,lat,lon,elev); if(!row) return null;
+  const e=elev!=null?elev:row[2], adj=-0.0065*(e-row[2]);
+  return {elevation:e,daily:{time:S.days,temperature_2m_min:row[3].map(v=>v==null?null:Math.round((v+adj)*10)/10),snowfall_sum:row[4],precipitation_sum:row[5]}};
+}
+const ELEV_MEM={};
+async function elevations(pts){
+  const key=pts.map(p=>p.lat.toFixed(3)+","+p.lon.toFixed(3)).join("|");
+  if(ELEV_MEM[key]) return ELEV_MEM[key];
+  try{
+    const r=await fetch("https://api.open-meteo.com/v1/elevation?latitude="+pts.map(p=>p.lat.toFixed(4)).join(",")+"&longitude="+pts.map(p=>p.lon.toFixed(4)).join(","));
+    const j=r.ok?await r.json():null; const e=j&&Array.isArray(j.elevation)?j.elevation:pts.map(()=>null);
+    ELEV_MEM[key]=e; return e;
+  }catch(e){return pts.map(()=>null)}
+}
+async function tripForecasts(pts){
+  const S=await sharedReady;
+  if(!S) return forecast(pts.map(p=>p.lat.toFixed(4)),pts.map(p=>p.lon.toFixed(4)));
+  /* Named places are stored exactly; only other places need a height lookup */
+  const need=pts.map(p=>nearestRow(S,p.lat,p.lon,null).km>1);
+  const ask=pts.filter((p,i)=>need[i]);
+  const got=ask.length?await elevations(ask):[];
+  let j=0; return pts.map((p,i)=>sharedFc(S,p.lat,p.lon,need[i]?got[j++]:null));
 }
 function jsonp(url){
   return new Promise((res,rej)=>{
@@ -517,7 +688,7 @@ function hazardsFor(places){
     for(const q of QUAKES){
       if(!q.strong||seenQ.has(q)) continue;
       const k=kmBetween(p.lat,p.lon,q.lat,q.lon);
-      if(k<=150){seenQ.add(q);out.push(t("hzQuake",{m:q.mag!=null?q.mag.toFixed(1):"–",k:Math.round(k),p:p.short,d:new Date(q.time).toLocaleDateString(locale(),{month:"short",day:"numeric"})}))}
+      if(k<=150){seenQ.add(q);out.push(t("hzQuake",{m:q.mag!=null?q.mag.toFixed(1):"–",k:Math.round(k),p:p.short,d:new Date(q.time).toLocaleDateString(locale(),{timeZone:JP_TZ,month:"short",day:"numeric"})}))}
     }
     for(const v of VOLCS){
       const k=kmBetween(p.lat,p.lon,v.lat,v.lon);
@@ -617,7 +788,7 @@ function profileSVG(pf){
   const W=360,l=36,r=12,b=22,ih=120, gx=6;
   const tw=s=>[...s].reduce((a,c)=>a+(/[\u3000-\u9fff\u30a0-\u30ff\uff00-\uffef]/.test(c)?10:5.9),0);
   const D=pf.D, X0=l+gx, X1=W-r-gx, X=d=>X0+d/D*(X1-X0);
-  const labels=pf.keys.map(k=>{const txt=shortName(k.label)+" "+Math.round(k.e||0).toLocaleString(locale())+" m", w=tw(txt), x=X(k.d);
+  const labels=pf.keys.filter(k=>!k.silent).map(k=>{const txt=shortName(k.label)+" "+Math.round(k.e||0).toLocaleString(locale())+" m", w=tw(txt), x=X(k.d);
     let x0=Math.min(Math.max(x-w/2,2),W-2-w); return {k,txt,w,x,x0}});
   const rows=[];
   labels.forEach(L=>{let ri=rows.findIndex(row=>row.every(o=>L.x0>o.x0+o.w+8||L.x0+L.w+8<o.x0)); if(ri<0){rows.push([]);ri=rows.length-1} rows[ri].push(L); L.row=ri});
@@ -644,7 +815,7 @@ function rp(p){const q={...p}; if(q.z) q.z=t(q.z); if(q.s&&typeof q.s==="object"
 function render(run){
   const {results,passes}=run;
   const endLevel=Math.max(...results.map(r=>r.a.level));
-  const level=Math.max(endLevel,...passes.map(x=>x.a.level));
+  const level=Math.max(endLevel,...passes.filter(x=>!x.alt).map(x=>x.a.level));
   const key="lv"+level;
   const sub= lang==="ja" ? I18N.en[key] : I18N.ja[key];
   let h=`<div class="sign l${level}"><div class="sign-inner"><div class="lamp" aria-hidden="true"></div><div><div class="sub" lang="${lang==="ja"?"en":"ja"}">${esc(sub)}</div><div class="main">${esc(t(key))}</div></div></div></div>`;
@@ -652,7 +823,7 @@ function render(run){
   h+= hz.length ? `<div class="haz"><h2>${esc(t("hazTitle"))}</h2><ul>${hz.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul></div>`
                 : `<div class="haz ok">${esc(t("hzNone"))}</div>`;
   if(level===0) h+=`<ul class="reasons"><li>${esc(t("rNone"))}</li></ul>`;
-  const worst=passes.filter(x=>x.a.level>endLevel).sort((a,b)=>(b.a.elev||0)-(a.a.elev||0))[0];
+  const worst=passes.filter(x=>!x.alt&&x.a.level>endLevel).sort((a,b)=>(b.a.elev||0)-(a.a.elev||0))[0];
   if(worst) h+=`<ul class="reasons"><li>${esc(t("rPass",{v:worst.pass.name,m:Math.round(worst.a.elev||0)}))}</li></ul>`;
   if(run.profile){
     h+=`<h3>${esc(t("profTitle"))}</h3><div class="profile">${profileSVG(run.profile)}</div><p class="place">${esc(t("profNote"))}</p>`;
@@ -663,7 +834,7 @@ function render(run){
     h+=`<table><thead><tr><th>${esc(t("thPass"))}</th><th>${esc(t("thElev"))}</th><th>${esc(t("thMin"))}</th><th>${esc(t("thSnowTot"))}</th><th></th></tr></thead><tbody>`;
     for(const x of passes){
       const o=x.a.obs;
-      h+=`<tr><td>${esc(x.pass.name)}${o&&o.cm>=1?`<br><span class="obs">${esc(t("obsNow",{cm:o.cm}))}</span>`:""}</td><td>${x.a.elev!=null?"~"+fmt(x.a.elev," m"):"–"}</td><td>${fmt(x.a.minT," °C")}</td><td>${fmt(x.a.snowT," cm",1)}</td><td><span class="dot d${x.a.level}" title="${esc(t("lv"+x.a.level))}"></span></td></tr>`;
+      h+=`<tr><td>${esc(x.pass.name)}${x.alt?`<br><span class="place">${esc(t("altRoad"))}</span>`:""}${o&&o.cm>=1?`<br><span class="obs">${esc(t("obsNow",{cm:o.cm}))}</span>`:""}</td><td>${x.a.elev!=null?"~"+fmt(x.a.elev," m"):"–"}</td><td>${fmt(x.a.minT," °C")}</td><td>${fmt(x.a.snowT," cm",1)}</td><td><span class="dot d${x.a.level}" title="${esc(t("lv"+x.a.level))}"></span></td></tr>`;
     }
     h+=`</tbody></table>`;
   }
@@ -693,34 +864,38 @@ async function run(){
     const places=[{role:"pick",...(await locate($("pick").value))}];
     if($("dest").value.trim()) places.push({role:"dest",...(await locate($("dest").value))});
     for(const p of places) p.short=p.label.replace(/^〒\S+\s/,"").split(",")[0];
-    const viaId=$("via").value;
-    let passList=[], auto=false;
-    if(viaId!==""){ passList=[PASSES[+viaId]] }
-    else if(places.length===2){ passList=passesBetween(places[0],places[1]); auto=passList.length>0 }
+    let route=null, passList=[], altSet=new Set();
+    if($("route").checked&&places.length===2){
+      route=routeTrip(places[0],places[1]);
+      if(route){ passList=[...route.passes,...route.alt]; route.alt.forEach(p=>altSet.add(p)) }
+      /* no road link (e.g. Hokkaido to Honshu needs a ferry): ends are still checked, no passes */
+    }
+    const auto=passList.length>0;
     const pts=[...places,...passList];
-    const [fcs]=await Promise.all([forecast(pts.map(p=>p.lat.toFixed(4)),pts.map(p=>p.lon.toFixed(4))),loadAmedas(),hazReady]);
+    const [fcs]=await Promise.all([tripForecasts(pts),loadAmedas(),hazReady]);
     /* Snow on the ground now only matters for trips starting within the next 3 days */
-    const useObs=days[0]<=addDays(iso(new Date()),3);
+    const useObs=days[0]<=addDays(jpToday(),3);
     const obsFor=(p,fc)=>useObs?nearestObs(p,fc&&fc.elevation):null;
     const results=places.map((p,i)=>({role:p.role,place:p,a:assess(p,fcs[i],days,obsFor(p,fcs[i]))}));
-    const passes=passList.map((ps,j)=>{const fc=fcs[places.length+j]; return {pass:ps,a:assess({...ps,short:ps.name},fc,days,obsFor(ps,fc))}});
+    const passes=passList.map((ps,j)=>{const fc=fcs[places.length+j]; return {pass:ps,alt:altSet.has(ps),a:assess({...ps,short:ps.name},fc,days,obsFor(ps,fc))}});
     lastRun={results,passes,auto};
     render(lastRun);
     setTimeout(()=>map.invalidateSize(),0);
     const pick=results[0], dest=results.find(x=>x.role==="dest");
-    if(dest||passes.length){
-      const keys=[{lat:pick.place.lat,lon:pick.place.lon,label:pick.place.short,level:pick.a.level},
-        ...passes.map(x=>({lat:x.pass.lat,lon:x.pass.lon,label:x.pass.name,level:x.a.level})),
-        ...(dest?[{lat:dest.place.lat,lon:dest.place.lon,label:dest.place.short,level:dest.a.level}]:[])];
+    if(route&&dest){
+      const lvlOf=p=>{const x=passes.find(y=>y.pass===p); return x?x.a.level:0};
+      const mid=route.line.slice(1,-1).map(q=>q.pass?{lat:q.lat,lon:q.lon,label:q.pass.name,level:lvlOf(q.pass)}:{lat:q.lat,lon:q.lon,silent:true});
+      const keys=[{lat:pick.place.lat,lon:pick.place.lon,label:pick.place.short,level:pick.a.level},...mid,
+        {lat:dest.place.lat,lon:dest.place.lon,label:dest.place.short,level:dest.a.level}];
       const thisRun=lastRun;
       buildProfile(keys).then(pf=>{ if(pf&&lastRun===thisRun){ lastRun.profile=pf; render(lastRun) } }).catch(()=>{});
     }
     tripLayer.clearLayers();
     places.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:9,color:"#FB8102",weight:3,fillOpacity:0}).addTo(tripLayer));
-    passList.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:11,color:"#FB8102",weight:2,dashArray:"3 3",fillOpacity:0}).addTo(tripLayer));
-    if(places.length===2) L.polyline([[places[0].lat,places[0].lon],[places[1].lat,places[1].lon]],{color:"#FB8102",weight:2,dashArray:"6 6",opacity:.7}).addTo(tripLayer);
+    passList.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:11,color:"#FB8102",weight:2,dashArray:"3 3",fillOpacity:0,opacity:altSet.has(p)?.5:1}).addTo(tripLayer));
+    if(route) L.polyline(route.line.map(q=>[q.lat,q.lon]),{color:"#FB8102",weight:3,opacity:.8}).addTo(tripLayer);
     map.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lon])).pad(0.6),{maxZoom:9});
-  }catch(e){$("err").textContent=errText(e)}
+  }catch(e){$("err").textContent=errText(e); $("out").innerHTML=""; lastRun=null; tripLayer.clearLayers()}
   finally{btn.disabled=false;btn.textContent=t("check")}
 }
 
@@ -737,15 +912,19 @@ function buildLayerControl(){
 }
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const COLORS=()=>({2:css("--red"),1:css("--amber"),0:css("--green"),n:css("--grey")});
+let overviewStamp=null;
 let overview=null; /* {days, fcs} */
+/* The 16-day forecast does not depend on the chosen dates: fetch once, repaint on date changes */
 async function drawOverview(){
   const a=$("d1").value,b=$("d2").value; if(!a||!b||b<a) return;
   const days=tripDays(a,b);
+  if(overview&&overview.fcs){overview.days=days; paintOverview(); return}
   $("mapnote").textContent=t("mapLoading");
-  try{
-    const fcs=await forecast(POINTS.map(p=>p.lat),POINTS.map(p=>p.lon));
-    overview={days,fcs};
-  }catch(e){overview={days,fcs:null}}
+  let err=null, fcs=null;
+  const S=await sharedReady;
+  if(S){ fcs=POINTS.map(p=>sharedFc(S,p.lat,p.lon,null)); overviewStamp=S.generated }
+  else { try{ fcs=await forecast(POINTS.map(p=>p.lat),POINTS.map(p=>p.lon)) }catch(e){ err=e } }
+  overview={days,fcs,err};
   paintOverview();
 }
 function paintOverview(){
@@ -756,16 +935,16 @@ function paintOverview(){
     L.circleMarker([p.lat,p.lon],{radius:p.capital?6:7,color:"#fff",weight:1.5,fillColor:lvl==null?C.n:C[lvl],fillOpacity:.95}).addTo(ptLayer)
      .bindPopup(()=>`<strong>${esc(p.name)}</strong> ${esc(p.pref)}<br>${esc(lvl==null?t("lgN"):t("lv"+lvl))}`);
   });
-  $("mapnote").textContent= fcs ? t("mapShowing",{n:days.length,d:fmtDay(days[0])}) : t("mapErr");
+  $("mapnote").textContent= fcs ? t("mapShowing",{n:days.length,d:fmtDay(days[0])})+(overviewStamp?" "+t("fcUpd",{d:new Date(overviewStamp).toLocaleString(locale(),{timeZone:JP_TZ,month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}):"") : (overview.err&&overview.err.k==="eBusy"?t("eBusy"):t("mapErr"));
 }
 const sqIcon=()=>L.divIcon({className:"",html:'<span class="sq" style="width:12px;height:12px"></span>',iconSize:[12,12],iconAnchor:[6,6]});
 const diaIcon=()=>L.divIcon({className:"",html:'<span class="dia"></span>',iconSize:[12,12],iconAnchor:[6,6]});
-PASSES.forEach(p=>L.marker([p.lat,p.lon],{icon:diaIcon(),title:p.name}).addTo(passLayer).bindPopup(()=>`<strong>${esc(p.name)}</strong><br><button class="popbtn" data-via="${p.id}">${esc(t("via"))}</button>`));
+PASSES.forEach(p=>L.marker([p.lat,p.lon],{icon:diaIcon(),title:p.name}).addTo(passLayer).bindPopup(()=>`<strong>${esc(p.name)}</strong>`));
 const triIcon=()=>L.divIcon({className:"",html:'<span class="tri"></span>',iconSize:[12,11],iconAnchor:[6,8]});
 function drawHazards(){
   quakeLayer.clearLayers(); volcLayer.clearLayers();
   QUAKES.forEach(q=>L.marker([q.lat,q.lon],{icon:sqIcon(),zIndexOffset:-100}).addTo(quakeLayer)
-    .bindPopup(()=>`<strong>M${q.mag!=null?q.mag.toFixed(1):"–"}</strong> ${esc(lang==="ja"?q.name:q.en)}<br>${esc(new Date(q.time).toLocaleString(locale(),{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}))}<br><span style="color:#5A6B7B">気象庁 JMA</span>`));
+    .bindPopup(()=>`<strong>M${q.mag!=null?q.mag.toFixed(1):"–"}</strong> ${esc(lang==="ja"?q.name:q.en)}<br>${esc(new Date(q.time).toLocaleString(locale(),{timeZone:JP_TZ,month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+" JST")}<br><span style="color:#5A6B7B">気象庁 JMA</span>`));
   VOLCS.forEach(v=>L.marker([v.lat,v.lon],{icon:triIcon()}).addTo(volcLayer).bindPopup(()=>`<strong>🌋 ${esc(v.name)}</strong>`));
 }
 window.addEventListener("resize",()=>map.invalidateSize());
@@ -779,7 +958,7 @@ fetch("stores.json").then(r=>r.ok?r.json():[]).then(list=>{
   });
 }).catch(()=>{});
 map.on("popupopen",e=>{const b=e.popup.getElement().querySelector(".popbtn"); if(!b) return;
-  b.onclick=()=>{ if(b.dataset.via!=null){$("via").value=b.dataset.via} else {$("pick").value=b.dataset.zip; $("pick").focus()} map.closePopup() }});
+  b.onclick=()=>{ $("pick").value=b.dataset.zip; $("pick").focus(); map.closePopup() }});
 
 /* ================= Language switching ================= */
 function buildFooter(){
@@ -788,13 +967,7 @@ function buildFooter(){
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.4.6';
-}
-function buildVia(){
-  const cur=$("via").value; const groups={};
-  PASSES.forEach(p=>(groups[p.region]=groups[p.region]||[]).push(p));
-  $("via").innerHTML=`<option value="">${esc(t("viaAuto"))}</option>`+Object.keys(groups).map(g=>`<optgroup label="${esc(g)}">${groups[g].map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}</optgroup>`).join("");
-  $("via").value=cur;
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.1';
 }
 function setLang(code){
   lang=I18N[code]?code:"en";
@@ -802,7 +975,7 @@ function setLang(code){
   document.documentElement.lang=locale();
   document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
   document.title=t("title"); $("lang").value=lang;
-  buildFooter(); buildLayerControl(); buildVia(); showWeeks();
+  buildFooter(); buildLayerControl(); showWeeks(); if($("jptime").textContent) tickJP();
   if(lastRun) render(lastRun);
   paintOverview();
   if(TSUNAMI) $("tsu").textContent="⚠ "+t("hzTsu",{a:TSUNAMI});
@@ -816,16 +989,17 @@ function detectLang(){
 /* ================= Init ================= */
 $("lang").innerHTML=LANGS.map(l=>`<option value="${l[0]}" lang="${l[2]}">${l[1]}</option>`).join("");
 $("lang").addEventListener("change",e=>setLang(e.target.value));
-const today=new Date(), end=new Date(); end.setDate(today.getDate()+3);
-$("d1").value=iso(today); $("d2").value=iso(end);
+const startJP=jpToday();
+$("d1").value=startJP; $("d2").value=addDays(startJP,3);
 $("go").addEventListener("click",run);
 document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>quick(b.dataset.q)));
 ["pick","dest"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")run()}));
+$("route").addEventListener("change",()=>{ if($("pick").value.trim()&&$("dest").value.trim()) run() });
 /* The last day can never be before the first day: the date pickers block earlier days,
    and moving the first day later carries the last day along, keeping the trip length. */
 let tripLen=Math.max(0,Math.round((new Date($("d2").value)-new Date($("d1").value))/864e5));
 function syncDates(changed){
-  const td=iso(new Date());
+  const td=jpToday();
   if($("d1").value&&$("d1").value<td) $("d1").value=td;
   const a=$("d1").value;
   if(changed==="d1"&&a){ if(!$("d2").value||$("d2").value<a) $("d2").value=addDays(a,tripLen) }
@@ -836,7 +1010,13 @@ function syncDates(changed){
 }
 $("d1").addEventListener("change",()=>syncDates("d1"));
 $("d2").addEventListener("change",()=>syncDates("d2"));
-$("d1").min=iso(new Date()); $("d2").min=$("d1").value;
+$("d1").min=jpToday(); $("d2").min=$("d1").value;
+/* Japan clock under the dates; also rolls the minimum date over at midnight in Japan */
+function tickJP(){
+  $("jptime").textContent=t("jpTime",{d:new Date().toLocaleString(locale(),{timeZone:JP_TZ,weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})});
+  const td=jpToday(); $("d1").min=td; if($("d1").value&&$("d1").value<td) syncDates("d1");
+}
+tickJP(); setInterval(tickJP,60000);
 setLang(detectLang());
 drawOverview();
 </script>
