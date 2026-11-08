@@ -273,6 +273,10 @@ de:{profTitle:"Höhenprofil der Route",profNote:"Gerade Linien zwischen Ihren Pu
 es:{profTitle:"Perfil de altitud de la ruta",profNote:"Líneas rectas entre tus puntos, no la carretera en sí. Altitudes del modelo del terreno.",lyT:"Sombreado del relieve"}
 };
 for(const l in I18N_V143) Object.assign(I18N[l],I18N_V143[l]);
+Object.assign(I18N.en,{eOkiMix:"Okinawa can’t be reached by car from the main islands. Check Okinawa and the main-island part as separate trips."});
+Object.assign(I18N.ja,{eOkiMix:"沖縄は本土と車でつながっていません。沖縄と本土は別々にチェックしてください。"});
+Object.assign(I18N.de,{eOkiMix:"Okinawa ist mit dem Auto nicht von den Hauptinseln erreichbar. Prüfen Sie Okinawa und die Hauptinseln als getrennte Fahrten."});
+Object.assign(I18N.es,{eOkiMix:"Okinawa no se puede alcanzar en coche desde las islas principales. Revisa Okinawa y la parte de las islas principales como viajes separados."});
 Object.assign(I18N.en,{newCheck:"New check"});
 Object.assign(I18N.ja,{newCheck:"新しいチェック"});
 Object.assign(I18N.de,{newCheck:"Neue Prüfung"});
@@ -397,7 +401,8 @@ const PICKUPS=[
  [["akita airport","秋田空港"],"Akita Airport 秋田空港","秋田県",39.616,140.219],
  [["kushiro airport","釧路空港"],"Kushiro Airport 釧路空港","北海道",43.041,144.193],
  [["memanbetsu","memanbetsu airport","女満別空港"],"Memanbetsu Airport 女満別空港","北海道",43.881,144.164],
- [["obihiro airport","帯広空港"],"Obihiro Airport 帯広空港","北海道",42.733,143.217]
+ [["obihiro airport","帯広空港"],"Obihiro Airport 帯広空港","北海道",42.733,143.217],
+ [["naha","naha airport","那覇","那覇空港","okinawa","沖縄"],"Naha Airport 那覇空港","沖縄県",26.196,127.646]
 ].map(p=>({keys:p[0],label:p[1],pref:p[2],lat:p[3],lon:p[4]}));
 /* Passes within 25 km of the straight line between two points */
 function passesBetween(a,b,radius=25){
@@ -638,7 +643,7 @@ async function locate(raw){
 async function locateName(q){
   const key=q.toLowerCase().replace(/\s+/g," ");
   const pk=PICKUPS.find(p=>p.keys.includes(key));
-  if(pk) return {label:pk.label,pref:pk.pref,lat:pk.lat,lon:pk.lon};
+  if(pk) return {label:pk.label,pref:pk.pref,lat:pk.lat,lon:pk.lon,okinawa:pk.pref==="沖縄県"};
   const hit=POINTS.find(p=>p.name.toLowerCase()===key);
   if(hit) return {label:hit.name+", "+hit.pref,pref:hit.pref,lat:hit.lat,lon:hit.lon};
   try{
@@ -647,8 +652,7 @@ async function locateName(q){
     if(j&&j.results&&j.results.length){
       /* Several places share a name (Hakata is in Fukuoka and in Ehime): take the most populous */
       const g=[...j.results].sort((a,b)=>(b.population||0)-(a.population||0))[0];
-      if(/okinawa|沖縄/i.test(g.admin1||"")) throw new AppErr("eOkinawa");
-      return {label:g.name+(g.admin1?", "+g.admin1:""),pref:null,lat:g.latitude,lon:g.longitude};
+      return {label:g.name+(g.admin1?", "+g.admin1:""),pref:null,lat:g.latitude,lon:g.longitude,okinawa:/okinawa|沖縄/i.test(g.admin1||"")};
     }
   }catch(e){ if(e.k) throw e; }
   try{
@@ -656,9 +660,8 @@ async function locateName(q){
     const gj=await g.json();
     if(gj&&gj.length){
       const tt=gj[0].properties.title||q;
-      if(/沖縄県/.test(tt)) throw new AppErr("eOkinawa");
       const pref=(tt.match(/^(北海道|東京都|京都府|大阪府|.{2,3}県)/)||[])[1]||null;
-      return {label:tt,pref,lat:gj[0].geometry.coordinates[1],lon:gj[0].geometry.coordinates[0]};
+      return {label:tt,pref,lat:gj[0].geometry.coordinates[1],lon:gj[0].geometry.coordinates[0],okinawa:pref==="沖縄県"};
     }
   }catch(e){ if(e.k) throw e; }
   throw new AppErr("eNotFound",{q});
@@ -670,14 +673,15 @@ async function locatePostal(raw){
   const z=await jsonp("https://zipcloud.ibsnet.co.jp/api/search?zipcode="+code);
   if(!z||!z.results||!z.results.length) throw new AppErr("eNoAddr",{c:pretty});
   const a=z.results[0]; const addr=a.address1+a.address2+a.address3;
-  if(a.address1==="沖縄県") throw new AppErr("eOkinawa");
+  const oki=a.address1==="沖縄県";
   let lat=null,lon=null;
   try{
     const g=await fetch("https://msearch.gsi.go.jp/address-search/AddressSearch?q="+encodeURIComponent(addr));
     const gj=await g.json(); if(gj&&gj.length){lon=gj[0].geometry.coordinates[0];lat=gj[0].geometry.coordinates[1]}
   }catch(e){}
+  if(lat==null&&oki){lat=26.212;lon=127.681}  /* Naha */
   if(lat==null){const c=POINTS.find(p=>p.capital&&p.pref===a.address1); if(!c) throw new AppErr("ePlace",{a:addr}); lat=c.lat;lon=c.lon}
-  return {label:pretty+" "+addr,pref:a.address1,lat,lon};
+  return {label:pretty+" "+addr,pref:a.address1,lat,lon,okinawa:oki};
 }
 
 /* ---- Hazards: same live feeds as the Outcome Ring of Fire map (JMA, with P2P地震情報 fallback) ---- */
@@ -861,6 +865,13 @@ function profileSVG(pf){
 const stName=s=>lang==="ja"?s.ja:s.en;
 function rp(p){const q={...p}; if(q.z) q.z=t(q.z); if(q.s&&typeof q.s==="object") q.s=stName(q.s); return q}
 function render(run){
+  if(run.okinawa){
+    const sub=lang==="ja"?I18N.en.lv0:I18N.ja.lv0;
+    $("out").innerHTML=`<div class="sign l0"><div class="sign-inner"><div class="lamp" aria-hidden="true"></div><div><div class="sub" lang="${lang==="ja"?"en":"ja"}">${esc(sub)}</div><div class="main">${esc(t("lv0"))}</div></div></div></div>`
+      +`<ul class="reasons"><li>${esc(t("eOkinawa"))}</li></ul>`
+      +run.places.map(p=>`<h3>${esc(t(p.role))}</h3><div class="place">${esc(p.label)}</div>`).join("");
+    return;
+  }
   const {results,passes}=run;
   const endLevel=Math.max(...results.map(r=>r.a.level));
   const level=Math.max(endLevel,...passes.filter(x=>!x.alt).map(x=>x.a.level));
@@ -912,6 +923,15 @@ async function run(){
     const places=[{role:"pick",...(await locate($("pick").value))}];
     if($("dest").value.trim()) places.push({role:"dest",...(await locate($("dest").value))});
     for(const p of places) p.short=p.label.replace(/^〒\S+\s/,"").split(",")[0];
+    const oki=places.filter(p=>p.okinawa);
+    if(oki.length&&oki.length<places.length) throw new AppErr("eOkiMix");
+    if(oki.length){
+      lastRun={okinawa:true,places}; render(lastRun);
+      tripLayer.clearLayers();
+      places.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:9,color:"#FB8102",weight:3,fillOpacity:0}).addTo(tripLayer));
+      map.fitBounds(L.latLngBounds(places.map(p=>[p.lat,p.lon])).pad(0.6),{maxZoom:9});
+      return;
+    }
     let route=null, passList=[], altSet=new Set();
     if($("route").checked&&places.length===2){
       route=routeTrip(places[0],places[1]);
@@ -1023,7 +1043,7 @@ function buildFooter(){
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.7';
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.8';
 }
 function setLang(code){
   lang=I18N[code]?code:"en";
