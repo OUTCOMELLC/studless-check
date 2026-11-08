@@ -141,6 +141,13 @@ footer a{color:inherit}
 .cal-f{margin-top:4px;font-size:.72rem;color:var(--muted);text-align:center}
 .cal td button:disabled{opacity:.3;cursor:not-allowed;background:none}
 @media (prefers-color-scheme:dark){.datebtn .cw,.cal td.cw,.cal th.cw{color:var(--gold)}}
+/* Map layer menu: checkbox to the left of its label, compact (overrides the form field styles) */
+.leaflet-control-layers{font-family:inherit;color:var(--ink);background:var(--surface);border-radius:8px}
+.leaflet-control-layers-expanded{padding:6px 10px}
+.leaflet-control-layers label{display:flex;align-items:center;gap:8px;margin:0;padding:3px 0;font-weight:400;font-size:.85rem;line-height:1.3;cursor:pointer}
+.leaflet-control-layers label > span,.leaflet-control-layers label > div{display:flex;align-items:center;gap:8px}
+.leaflet-control-layers input.leaflet-control-layers-selector{width:16px;height:16px;margin:0;padding:0;flex:none;accent-color:var(--orange);top:0;border:0;background:none}
+.leaflet-control-layers-separator{margin:4px 0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -1043,7 +1050,7 @@ function buildFooter(){
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.8';
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.10';
 }
 function setLang(code){
   lang=I18N[code]?code:"en";
