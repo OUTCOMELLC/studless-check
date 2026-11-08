@@ -18,6 +18,8 @@ No server, no build step, no API keys. It runs entirely in the browser on GitHub
 - **Snow on the ground now (JMA AMeDAS sensors):** for trips starting within 3 days, the nearest snow-depth station within 25 km and within 400 m of the place's height is checked. Any snow on the ground makes it red. Summit stations are ignored by the height rule.
 - **Mountain passes:** about 26 passes and high road sections are listed in `PASSES` inside index.html (coordinates approximate). Passes within 25 km of the straight line between pickup and destination are checked automatically; users can also pick one under "Via mountain pass".
 - The trip gets the worst result across pickup, destination, passes and every day.
+- **Route height profile:** terrain heights sampled along straight lines pickup → passes → destination (Open-Meteo elevation API), with each point coloured by its verdict.
+- **Terrain shading:** optional GSI hillshade layer in the map's layer menu, off by default.
 
 ## Adding rental stores
 `stores.json` starts empty. Add stores in this shape and they appear on the map with a "Use as pickup" button:

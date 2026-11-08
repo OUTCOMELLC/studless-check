@@ -31,7 +31,8 @@
 *,*::before,*::after{box-sizing:inherit}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;font-size:16px;line-height:1.5}
-.app{display:grid;grid-template-columns:420px 1fr;min-height:100%}
+.app{display:grid;grid-template-columns:420px 1fr;grid-template-rows:100%;height:100%}
+.panel{min-height:0}
 .panel{padding:20px 22px 28px;overflow-y:auto;border-inline-end:1px solid var(--line);background:var(--surface)}
 .mapwrap{position:relative;min-height:60vh}
 #map{position:absolute;inset:0}
@@ -72,6 +73,7 @@ button.go:disabled{opacity:.6;cursor:wait}
 table{width:100%;border-collapse:collapse;font-size:.88rem}
 th,td{text-align:end;padding:6px 4px;border-bottom:1px solid var(--line)}
 th:first-child,td:first-child{text-align:start}
+td:not(:first-child){white-space:nowrap}
 th{font-weight:700;color:var(--muted)}
 tr.wk td{font-weight:700;color:var(--navy);background:var(--chip);border-bottom:0;padding-top:4px;padding-bottom:4px}
 @media (prefers-color-scheme:dark){tr.wk td{color:var(--gold)}}
@@ -81,6 +83,15 @@ tr.wk td{font-weight:700;color:var(--navy);background:var(--chip);border-bottom:
 .dia{display:inline-block;width:9px;height:9px;background:var(--navy);border:1.5px solid #fff;outline:1px solid var(--navy);transform:rotate(45deg);vertical-align:middle}
 select.wide{width:100%;max-width:none;padding:10px 12px;font-size:1rem}
 .obs{font-size:.8rem;color:var(--red);font-weight:700}
+.profile{margin:4px 0 14px}
+.profile svg{width:100%;height:auto;display:block}
+.pf-area{fill:var(--chip);stroke:var(--navy);stroke-width:1.5}
+.pf-grid{stroke:var(--line);stroke-width:1}
+.pf-ax{fill:var(--muted);font-size:9px}
+.pf-lbl{fill:var(--ink);font-size:10px;font-weight:700}
+.pf-dot{stroke:#fff;stroke-width:1.5}
+.pf-d2{fill:var(--red)}.pf-d1{fill:var(--amber)}.pf-d0{fill:var(--green)}
+@media (prefers-color-scheme:dark){.pf-area{stroke:var(--gold)}}
 .tri{display:inline-block;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid var(--orange);vertical-align:middle}
 h3{font-size:1rem;margin:18px 0 6px}
 .place{font-size:.9rem;color:var(--muted);margin:2px 0 8px}
@@ -92,7 +103,8 @@ footer a{color:inherit}
 .leaflet-popup-content{font-family:inherit}
 .popbtn{margin-top:6px;font:inherit;font-size:.8rem;padding:4px 8px;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:6px;cursor:pointer}
 @media (max-width:820px){
-  .app{grid-template-columns:1fr}
+  .app{grid-template-columns:1fr;grid-template-rows:auto;height:auto}
+  .panel{overflow:visible}
   .panel{border-inline-end:0;border-bottom:1px solid var(--line)}
   .mapwrap{height:70vh}
 }
@@ -219,6 +231,13 @@ de:{via:"Über Pass",viaHint:"optional",viaAuto:"Automatisch finden",passTitle:"
 es:{via:"Por puerto de montaña",viaHint:"opcional",viaAuto:"Buscar automáticamente",passTitle:"Puertos de montaña en tu ruta",passNote:"Detectados a lo largo de la línea recta entre la recogida y el destino. Si tu carretera va por otro lado, elige un puerto en “Por puerto de montaña”.",thPass:"Puerto",thElev:"Altitud",thMin:"Mínima",thSnowTot:"Nieve total",rPass:"Es probable que tu ruta cruce {v} a unos {m} m, donde las condiciones son peores que en los extremos.",rObsSnow:"Nieve en el suelo ahora: {cm} cm en la estación de {s} ({m} m, a {k} km).",rObsNone:"Ahora no hay nieve en el suelo en la estación de {s} ({m} m, a {k} km).",obsNow:"{cm} cm de nieve ahora",lyP:"Puertos de montaña",cObs:"Nieve en el suelo"}
 };
 for(const l in I18N_V14) Object.assign(I18N[l],I18N_V14[l]);
+const I18N_V143={
+en:{profTitle:"Route height profile",profNote:"Straight lines between your points, not the road itself. Heights from the terrain model.",lyT:"Terrain shading"},
+ja:{profTitle:"ルートの標高断面",profNote:"地点間を直線で結んだ断面で、実際の道路ではありません。標高は地形データによります。",lyT:"地形の陰影"},
+de:{profTitle:"Höhenprofil der Route",profNote:"Gerade Linien zwischen Ihren Punkten, nicht die Straße selbst. Höhen aus dem Geländemodell.",lyT:"Geländeschattierung"},
+es:{profTitle:"Perfil de altitud de la ruta",profNote:"Líneas rectas entre tus puntos, no la carretera en sí. Altitudes del modelo del terreno.",lyT:"Sombreado del relieve"}
+};
+for(const l in I18N_V143) Object.assign(I18N[l],I18N_V143[l]);
 let lang="en";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -276,9 +295,43 @@ const PASSES=[
  ["Kansai–Hokuriku 関西・北陸","Meishin Expwy, Sekigahara 名神 関ケ原",35.365,136.460,"mountain"],["Kansai–Hokuriku 関西・北陸","Hokuriku Expwy, Kinome 北陸道 木ノ芽",35.730,136.130,"heavy"],
  ["Chugoku–Shikoku 中国・四国","Yonago Expwy, Hiruzen 米子道 蒜山",35.270,133.680,"heavy"],["Chugoku–Shikoku 中国・四国","Hamada Expwy, Geihoku 浜田道 芸北",34.700,132.200,"mountain"],
  ["Chugoku–Shikoku 中国・四国","Kochi Expwy, Otoyo 高知道 大豊",33.770,133.660,"mountain"],
- ["Kyushu 九州","Aso Milk Road 阿蘇ミルクロード",32.990,131.030,"mountain"],["Kyushu 九州","Makinoto Pass 牧ノ戸峠",33.106,131.233,"mountain"],
+ ["Kyushu 九州","Aso Milk Road 阿蘇ミルクロード",32.992,131.053,"mountain"],["Kyushu 九州","Makinoto Pass 牧ノ戸峠",33.106,131.233,"mountain"],
  ["Kyushu 九州","Kyushu Expwy, Kakuto 九州道 加久藤",32.110,130.770,"mountain"]
 ].map((p,i)=>({id:i,region:p[0],name:p[1],lat:p[2],lon:p[3],zone:p[4]}));
+/* Common rental pickup points. Matched before any web lookup. */
+const PICKUPS=[
+ [["hakata","hakata station","博多","博多駅"],"Hakata Station 博多駅","福岡県",33.590,130.421],
+ [["fukuoka airport","福岡空港"],"Fukuoka Airport 福岡空港","福岡県",33.586,130.451],
+ [["narita","narita airport","成田","成田空港"],"Narita Airport 成田空港","千葉県",35.772,140.393],
+ [["haneda","haneda airport","羽田","羽田空港"],"Haneda Airport 羽田空港","東京都",35.549,139.780],
+ [["tokyo station","東京駅"],"Tokyo Station 東京駅","東京都",35.681,139.767],
+ [["new chitose","new chitose airport","chitose","chitose airport","新千歳","新千歳空港"],"New Chitose Airport 新千歳空港","北海道",42.775,141.692],
+ [["sapporo station","札幌駅"],"Sapporo Station 札幌駅","北海道",43.069,141.351],
+ [["kansai airport","kix","関西空港","関空"],"Kansai Airport 関西空港","大阪府",34.434,135.244],
+ [["shin-osaka","shin osaka","shinosaka","新大阪","新大阪駅"],"Shin-Osaka Station 新大阪駅","大阪府",34.733,135.500],
+ [["kyoto station","京都駅"],"Kyoto Station 京都駅","京都府",34.986,135.759],
+ [["centrair","chubu airport","chubu centrair","中部空港","セントレア"],"Chubu Centrair Airport 中部国際空港","愛知県",34.858,136.805],
+ [["nagoya station","名古屋駅"],"Nagoya Station 名古屋駅","愛知県",35.171,136.882],
+ [["sendai airport","仙台空港"],"Sendai Airport 仙台空港","宮城県",38.140,140.917],
+ [["kumamoto airport","阿蘇くまもと空港","熊本空港"],"Kumamoto Airport 熊本空港","熊本県",32.837,130.855],
+ [["kagoshima airport","鹿児島空港"],"Kagoshima Airport 鹿児島空港","鹿児島県",31.803,130.719],
+ [["hiroshima airport","広島空港"],"Hiroshima Airport 広島空港","広島県",34.436,132.919],
+ [["asahikawa airport","旭川空港"],"Asahikawa Airport 旭川空港","北海道",43.671,142.448],
+ [["hakodate airport","函館空港"],"Hakodate Airport 函館空港","北海道",41.770,140.822],
+ [["komatsu airport","小松空港"],"Komatsu Airport 小松空港","石川県",36.395,136.407],
+ [["toyama airport","富山空港"],"Toyama Airport 富山空港","富山県",36.648,137.188],
+ [["niigata airport","新潟空港"],"Niigata Airport 新潟空港","新潟県",37.956,139.121],
+ [["matsumoto airport","信州まつもと空港","松本空港"],"Matsumoto Airport 松本空港","長野県",36.167,137.923],
+ [["takamatsu airport","高松空港"],"Takamatsu Airport 高松空港","香川県",34.214,134.016],
+ [["matsuyama airport","松山空港"],"Matsuyama Airport 松山空港","愛媛県",33.827,132.700],
+ [["oita airport","大分空港"],"Oita Airport 大分空港","大分県",33.479,131.737],
+ [["miyazaki airport","宮崎空港"],"Miyazaki Airport 宮崎空港","宮崎県",31.877,131.449],
+ [["aomori airport","青森空港"],"Aomori Airport 青森空港","青森県",40.735,140.691],
+ [["akita airport","秋田空港"],"Akita Airport 秋田空港","秋田県",39.616,140.219],
+ [["kushiro airport","釧路空港"],"Kushiro Airport 釧路空港","北海道",43.041,144.193],
+ [["memanbetsu","memanbetsu airport","女満別空港"],"Memanbetsu Airport 女満別空港","北海道",43.881,144.164],
+ [["obihiro airport","帯広空港"],"Obihiro Airport 帯広空港","北海道",42.733,143.217]
+].map(p=>({keys:p[0],label:p[1],pref:p[2],lat:p[3],lon:p[4]}));
 /* Passes within 25 km of the straight line between two points */
 function passesBetween(a,b){
   const ml=(a.lat+b.lat)/2*Math.PI/180, X=p=>p.lon*Math.cos(ml)*111.32, Y=p=>p.lat*110.57;
@@ -365,13 +418,16 @@ async function locate(raw){
 }
 async function locateName(q){
   const key=q.toLowerCase().replace(/\s+/g," ");
+  const pk=PICKUPS.find(p=>p.keys.includes(key));
+  if(pk) return {label:pk.label,pref:pk.pref,lat:pk.lat,lon:pk.lon};
   const hit=POINTS.find(p=>p.name.toLowerCase()===key);
   if(hit) return {label:hit.name+", "+hit.pref,pref:hit.pref,lat:hit.lat,lon:hit.lon};
   try{
-    const r=await fetch("https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&countryCode=JP&name="+encodeURIComponent(q));
+    const r=await fetch("https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&countryCode=JP&name="+encodeURIComponent(q));
     const j=await r.json();
     if(j&&j.results&&j.results.length){
-      const g=j.results[0];
+      /* Several places share a name (Hakata is in Fukuoka and in Ehime): take the most populous */
+      const g=[...j.results].sort((a,b)=>(b.population||0)-(a.population||0))[0];
       if(/okinawa|沖縄/i.test(g.admin1||"")) throw new AppErr("eOkinawa");
       return {label:g.name+(g.admin1?", "+g.admin1:""),pref:null,lat:g.latitude,lon:g.longitude};
     }
@@ -532,6 +588,57 @@ function assess(place,fc,days,obs){
 /* ================= Render ================= */
 const fmt=(v,u,dp=0)=>v==null?"–":(+v).toLocaleString(locale(),{minimumFractionDigits:dp,maximumFractionDigits:dp})+u;
 let lastRun=null;
+/* Short label in the reader's script: "Aso Milk Road 阿蘇ミルクロード" -> English part, or the Japanese part in 日本語 */
+function shortName(s){
+  const m=String(s).match(/^(.*?)\s+([\u3000-\u9fff\u30a0-\u30ff\uff00-\uffef].*)$/);
+  if(!m) return s;
+  return (lang==="ja"?m[2]:m[1]).replace(/\s*\(.*\)$/,"");
+}
+/* Sample terrain heights along straight lines pickup -> passes -> destination (Open-Meteo elevation API, free) */
+async function buildProfile(keys){
+  const segKm=[]; let D=0;
+  for(let i=1;i<keys.length;i++){const k=kmBetween(keys[i-1].lat,keys[i-1].lon,keys[i].lat,keys[i].lon);segKm.push(k);D+=k}
+  if(D<1) return null;
+  const N=90, pts=[];
+  keys[0].d=0; pts.push({lat:keys[0].lat,lon:keys[0].lon,d:0,key:0});
+  let acc=0;
+  for(let i=1;i<keys.length;i++){
+    const n=Math.max(3,Math.round(N*segKm[i-1]/D)), a=keys[i-1], b=keys[i];
+    for(let j=1;j<=n;j++){const f=j/n; pts.push({lat:a.lat+(b.lat-a.lat)*f,lon:a.lon+(b.lon-a.lon)*f,d:acc+segKm[i-1]*f,key:j===n?i:null})}
+    acc+=segKm[i-1]; keys[i].d=acc;
+  }
+  const r=await fetch("https://api.open-meteo.com/v1/elevation?latitude="+pts.map(p=>p.lat.toFixed(4)).join(",")+"&longitude="+pts.map(p=>p.lon.toFixed(4)).join(","));
+  const j=await r.json(); if(!j||!Array.isArray(j.elevation)) return null;
+  pts.forEach((p,i)=>{p.e=Math.max(0,j.elevation[i]||0); if(p.key!=null) keys[p.key].e=p.e});
+  return {pts,keys,D};
+}
+function profileSVG(pf){
+  /* Labels sit in rows above the chart with thin leader lines, so nearby points never collide */
+  const W=360,l=36,r=12,b=22,ih=120, gx=6;
+  const tw=s=>[...s].reduce((a,c)=>a+(/[\u3000-\u9fff\u30a0-\u30ff\uff00-\uffef]/.test(c)?10:5.9),0);
+  const D=pf.D, X0=l+gx, X1=W-r-gx, X=d=>X0+d/D*(X1-X0);
+  const labels=pf.keys.map(k=>{const txt=shortName(k.label)+" "+Math.round(k.e||0).toLocaleString(locale())+" m", w=tw(txt), x=X(k.d);
+    let x0=Math.min(Math.max(x-w/2,2),W-2-w); return {k,txt,w,x,x0}});
+  const rows=[];
+  labels.forEach(L=>{let ri=rows.findIndex(row=>row.every(o=>L.x0>o.x0+o.w+8||L.x0+L.w+8<o.x0)); if(ri<0){rows.push([]);ri=rows.length-1} rows[ri].push(L); L.row=ri});
+  const tp=12+rows.length*13+10, H=tp+ih+b;
+  const maxRaw=Math.max(...pf.pts.map(p=>p.e)), step=maxRaw>1400?500:maxRaw>600?300:100;
+  const maxE=Math.max(step*2,Math.ceil(maxRaw*1.1/step)*step);
+  const Y=e=>tp+(1-e/maxE)*ih;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t("profTitle"))}">`;
+  for(let e=0;e<=maxE;e+=step){s+=`<line class="pf-grid" x1="${l}" x2="${W-r}" y1="${Y(e)}" y2="${Y(e)}"/><text class="pf-ax" x="${l-4}" y="${Y(e)+3}" text-anchor="end">${e.toLocaleString(locale())}</text>`}
+  s+=`<text class="pf-ax" x="${l-4}" y="${Y(maxE)-8}" text-anchor="end">m</text>`;
+  const line=pf.pts.map(p=>X(p.d).toFixed(1)+","+Y(p.e).toFixed(1)).join(" L");
+  s+=`<path class="pf-area" d="M${X(0)},${Y(0)} L${line} L${X(D)},${Y(0)} Z"/>`;
+  s+=`<text class="pf-ax" x="${X0}" y="${H-6}">0 km</text><text class="pf-ax" x="${X1}" y="${H-6}" text-anchor="end">${Math.round(D).toLocaleString(locale())} km</text>`;
+  labels.forEach(L=>{
+    const y=Y(L.k.e||0), ly=12+L.row*13+9;
+    s+=`<line class="pf-grid" x1="${L.x}" x2="${L.x}" y1="${ly+3}" y2="${y-6}" stroke-dasharray="2 2"/>`;
+    s+=`<circle class="pf-dot pf-d${L.k.level}" cx="${L.x}" cy="${y}" r="5"/>`;
+    s+=`<text class="pf-lbl" x="${L.x0}" y="${ly}">${esc(L.txt)}</text>`;
+  });
+  return s+"</svg>";
+}
 const stName=s=>lang==="ja"?s.ja:s.en;
 function rp(p){const q={...p}; if(q.z) q.z=t(q.z); if(q.s&&typeof q.s==="object") q.s=stName(q.s); return q}
 function render(run){
@@ -547,6 +654,9 @@ function render(run){
   if(level===0) h+=`<ul class="reasons"><li>${esc(t("rNone"))}</li></ul>`;
   const worst=passes.filter(x=>x.a.level>endLevel).sort((a,b)=>(b.a.elev||0)-(a.a.elev||0))[0];
   if(worst) h+=`<ul class="reasons"><li>${esc(t("rPass",{v:worst.pass.name,m:Math.round(worst.a.elev||0)}))}</li></ul>`;
+  if(run.profile){
+    h+=`<h3>${esc(t("profTitle"))}</h3><div class="profile">${profileSVG(run.profile)}</div><p class="place">${esc(t("profNote"))}</p>`;
+  }
   if(passes.length){
     h+=`<h3>${esc(t("passTitle"))}</h3>`;
     if(run.auto) h+=`<p class="place">${esc(t("passNote"))}</p>`;
@@ -596,6 +706,15 @@ async function run(){
     const passes=passList.map((ps,j)=>{const fc=fcs[places.length+j]; return {pass:ps,a:assess({...ps,short:ps.name},fc,days,obsFor(ps,fc))}});
     lastRun={results,passes,auto};
     render(lastRun);
+    setTimeout(()=>map.invalidateSize(),0);
+    const pick=results[0], dest=results.find(x=>x.role==="dest");
+    if(dest||passes.length){
+      const keys=[{lat:pick.place.lat,lon:pick.place.lon,label:pick.place.short,level:pick.a.level},
+        ...passes.map(x=>({lat:x.pass.lat,lon:x.pass.lon,label:x.pass.name,level:x.a.level})),
+        ...(dest?[{lat:dest.place.lat,lon:dest.place.lon,label:dest.place.short,level:dest.a.level}]:[])];
+      const thisRun=lastRun;
+      buildProfile(keys).then(pf=>{ if(pf&&lastRun===thisRun){ lastRun.profile=pf; render(lastRun) } }).catch(()=>{});
+    }
     tripLayer.clearLayers();
     places.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:9,color:"#FB8102",weight:3,fillOpacity:0}).addTo(tripLayer));
     passList.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:11,color:"#FB8102",weight:2,dashArray:"3 3",fillOpacity:0}).addTo(tripLayer));
@@ -609,10 +728,11 @@ async function run(){
 const map=L.map("map",{zoomControl:true}).setView([37.2,137.5],5);
 L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",{maxZoom:18,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>'}).addTo(map);
 const ptLayer=L.layerGroup().addTo(map), quakeLayer=L.layerGroup().addTo(map), volcLayer=L.layerGroup().addTo(map), storeLayer=L.layerGroup().addTo(map), passLayer=L.layerGroup().addTo(map), tripLayer=L.layerGroup().addTo(map);
+const reliefLayer=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png",{opacity:.45,maxNativeZoom:16,maxZoom:18,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>'});
 let layerCtl=null;
 function buildLayerControl(){
   if(layerCtl) map.removeControl(layerCtl);
-  const o={}; o[t("lyV")]=ptLayer; o[t("lyQ")]=quakeLayer; o[t("lyVo")]=volcLayer; o[t("lyP")]=passLayer; o[t("lyS")]=storeLayer;
+  const o={}; o[t("lyV")]=ptLayer; o[t("lyQ")]=quakeLayer; o[t("lyVo")]=volcLayer; o[t("lyP")]=passLayer; o[t("lyT")]=reliefLayer; o[t("lyS")]=storeLayer;
   layerCtl=L.control.layers(null,o,{collapsed:true,position:"topright"}).addTo(map);
 }
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -648,6 +768,7 @@ function drawHazards(){
     .bindPopup(()=>`<strong>M${q.mag!=null?q.mag.toFixed(1):"–"}</strong> ${esc(lang==="ja"?q.name:q.en)}<br>${esc(new Date(q.time).toLocaleString(locale(),{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}))}<br><span style="color:#5A6B7B">気象庁 JMA</span>`));
   VOLCS.forEach(v=>L.marker([v.lat,v.lon],{icon:triIcon()}).addTo(volcLayer).bindPopup(()=>`<strong>🌋 ${esc(v.name)}</strong>`));
 }
+window.addEventListener("resize",()=>map.invalidateSize());
 /* Optional rental store layer: fill stores.json (see README) */
 fetch("stores.json").then(r=>r.ok?r.json():[]).then(list=>{
   (list||[]).forEach(s=>{
@@ -666,8 +787,8 @@ function buildFooter(){
    esc(t("cWeather"))+': <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · '+
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
-   esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.4';
+   esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.4.3';
 }
 function buildVia(){
   const cur=$("via").value; const groups={};
