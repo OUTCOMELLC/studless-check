@@ -82,6 +82,8 @@ tr.wk td{font-weight:700;color:var(--navy);background:var(--chip);border-bottom:
 .d2{background:var(--red)}.d1{background:var(--amber)}.d0{background:var(--green)}.dn{background:var(--grey)}
 .sq{display:inline-block;width:10px;height:10px;background:var(--gold);border:1.5px solid var(--navy);vertical-align:middle}
 .dia{display:inline-block;width:9px;height:9px;background:var(--navy);border:1.5px solid #fff;outline:1px solid var(--navy);transform:rotate(45deg);vertical-align:middle}
+.lgsw{display:flex;gap:6px;align-items:center;cursor:pointer;font-weight:700;margin:2px 0}
+.lgsw input{width:16px;height:16px;margin:0;accent-color:var(--orange)}
 .chk{display:flex;gap:8px;align-items:center;font-weight:400;margin-top:14px;cursor:pointer}
 .chk input{width:18px;height:18px;margin:0;accent-color:var(--orange)}
 select.wide{width:100%;max-width:none;padding:10px 12px;font-size:1rem}
@@ -111,6 +113,25 @@ footer a{color:inherit}
   .panel{border-inline-end:0;border-bottom:1px solid var(--line)}
   .mapwrap{height:70vh}
 }
+.datewrap{position:relative}
+.datebtn{width:100%;font:inherit;text-align:start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:6px;min-height:46px}
+.datebtn .cw{font-size:.72rem;font-weight:700;color:var(--navy);white-space:nowrap}
+.cal{position:absolute;z-index:1000;top:calc(100% + 6px);width:min(320px,calc(100vw - 40px));background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:10px}
+.cal[hidden]{display:none}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-weight:700}
+.cal-h button{font:inherit;font-size:1.1rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;width:34px;height:34px;cursor:pointer}
+.cal table{width:100%;border-collapse:collapse;font-size:.85rem;table-layout:fixed}
+.cal th,.cal td{text-align:center;padding:2px;border:0;white-space:normal}
+.cal th{color:var(--muted);font-weight:700;font-size:.72rem}
+.cal td.cw,.cal th.cw{color:var(--navy);font-size:.68rem;font-weight:700;border-inline-end:1px solid var(--line);width:12%}
+.cal td button{width:100%;height:34px;font:inherit;border:0;border-radius:6px;background:none;color:var(--ink);cursor:pointer;padding:0}
+.cal td button:hover{background:var(--chip)}
+.cal td button.out{color:var(--muted)}
+.cal td button.inr{background:var(--chip)}
+.cal td button.sel{background:var(--orange);color:#fff;font-weight:700}
+.cal td button.today{box-shadow:inset 0 0 0 2px var(--navy)}
+.cal td button:disabled{opacity:.3;cursor:not-allowed;background:none}
+@media (prefers-color-scheme:dark){.datebtn .cw,.cal td.cw,.cal th.cw{color:var(--gold)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -130,8 +151,9 @@ footer a{color:inherit}
   <input id="dest" autocomplete="off" placeholder="Hakuba · 白馬村 · 399-9301">
   <label class="chk"><input type="checkbox" id="route" checked> <span data-i18n="routeToggle"></span></label>
   <div class="row">
-    <div><label for="d1" data-i18n="first"></label><input id="d1" type="date"></div>
-    <div><label for="d2" data-i18n="last"></label><input id="d2" type="date"></div>
+    <div class="datewrap"><label for="d1b" data-i18n="first"></label><input id="d1" type="hidden"><button type="button" class="datebtn" id="d1b" aria-haspopup="dialog"></button>
+      <div class="cal" id="cal" role="dialog" hidden></div></div>
+    <div class="datewrap"><label for="d2b" data-i18n="last"></label><input id="d2" type="hidden"><button type="button" class="datebtn" id="d2b" aria-haspopup="dialog"></button></div>
   </div>
   <div class="quick">
     <button type="button" data-q="today" data-i18n="today"></button>
@@ -157,8 +179,9 @@ footer a{color:inherit}
     <span class="dot d1"></span> <span data-i18n="lv1"></span><br>
     <span class="dot d0"></span> <span data-i18n="lv0"></span><br>
     <span class="dot dn"></span> <span data-i18n="lgN"></span><br>
-    <span class="sq"></span> <span data-i18n="lgQuake"></span><br>
-    <span class="tri"></span> <span data-i18n="lgVolc"></span><br>
+    <label class="lgsw"><input type="checkbox" id="hazsw"> <span data-i18n="hazToggle"></span></label>
+    <span id="hazrows" hidden><span class="sq"></span> <span data-i18n="lgQuake"></span><br>
+    <span class="tri"></span> <span data-i18n="lgVolc"></span><br></span>
     <span class="dia" style="margin:0 2px"></span> <span data-i18n="lyP"></span>
   </div>
 </section>
@@ -241,6 +264,14 @@ de:{profTitle:"Höhenprofil der Route",profNote:"Gerade Linien zwischen Ihren Pu
 es:{profTitle:"Perfil de altitud de la ruta",profNote:"Líneas rectas entre tus puntos, no la carretera en sí. Altitudes del modelo del terreno.",lyT:"Sombreado del relieve"}
 };
 for(const l in I18N_V143) Object.assign(I18N[l],I18N_V143[l]);
+Object.assign(I18N.en,{cwShort:"CW",prevMonth:"Previous month",nextMonth:"Next month"});
+Object.assign(I18N.ja,{cwShort:"週",prevMonth:"前の月",nextMonth:"次の月"});
+Object.assign(I18N.de,{cwShort:"KW",prevMonth:"Vorheriger Monat",nextMonth:"Nächster Monat"});
+Object.assign(I18N.es,{cwShort:"Sem.",prevMonth:"Mes anterior",nextMonth:"Mes siguiente"});
+Object.assign(I18N.en,{hazToggle:"Show earthquakes and volcanoes",lgQuake:"Earthquake M4+, past 7 days"});
+Object.assign(I18N.ja,{hazToggle:"地震・火山を表示",lgQuake:"地震 M4以上（過去7日）"});
+Object.assign(I18N.de,{hazToggle:"Erdbeben und Vulkane anzeigen",lgQuake:"Erdbeben ab M4, letzte 7 Tage"});
+Object.assign(I18N.es,{hazToggle:"Mostrar terremotos y volcanes",lgQuake:"Terremoto M4+, últimos 7 días"});
 Object.assign(I18N.en,{routeToggle:"Check the roads in between (mountain passes)",altRoad:"possible alternative road",passNote:"Based on the main expressways and national roads between pickup and destination. Back roads are not covered.",profNote:"Follows the main roads between your points; heights from the terrain model."});
 Object.assign(I18N.ja,{routeToggle:"途中の道路（峠）もチェック",altRoad:"別ルートの可能性",passNote:"受け取り場所と行き先の間の主要な高速道路・国道に基づいています。裏道は対象外です。",profNote:"地点間の主要道路に沿った断面です。標高は地形データによります。"});
 Object.assign(I18N.de,{routeToggle:"Straßen dazwischen prüfen (Bergpässe)",altRoad:"mögliche Alternativroute",passNote:"Basierend auf den wichtigsten Autobahnen und Nationalstraßen zwischen Abholung und Ziel. Nebenstraßen sind nicht berücksichtigt.",profNote:"Folgt den Hauptstraßen zwischen Ihren Punkten; Höhen aus dem Geländemodell."});
@@ -492,7 +523,7 @@ function quick(kind){
   if(kind==="today"){a=td;b=td}
   else if(kind==="week"){a=td;b=addDays(td,6)} /* next 7 days, same on any weekday */
   else {a=addDays(td,7-dow);b=addDays(a,6)}
-  $("d1").value=a;$("d2").value=b;$("d2").min=a;tripLen=Math.round((new Date(b)-new Date(a))/864e5);showWeeks();drawOverview();
+  $("d1").value=a;$("d2").value=b;$("d2").min=a;paintDates();tripLen=Math.round((new Date(b)-new Date(a))/864e5);showWeeks();drawOverview();
   if($("pick").value.trim()) run();
 }
 const fmtDay=s=>new Date(s+"T00:00:00").toLocaleDateString(locale(),{weekday:"short",month:"short",day:"numeric"});
@@ -902,7 +933,7 @@ async function run(){
 /* ================= Map ================= */
 const map=L.map("map",{zoomControl:true}).setView([37.2,137.5],5);
 L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",{maxZoom:18,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>'}).addTo(map);
-const ptLayer=L.layerGroup().addTo(map), quakeLayer=L.layerGroup().addTo(map), volcLayer=L.layerGroup().addTo(map), storeLayer=L.layerGroup().addTo(map), passLayer=L.layerGroup().addTo(map), tripLayer=L.layerGroup().addTo(map);
+const ptLayer=L.layerGroup().addTo(map), quakeLayer=L.layerGroup(), volcLayer=L.layerGroup(), storeLayer=L.layerGroup().addTo(map), passLayer=L.layerGroup().addTo(map), tripLayer=L.layerGroup().addTo(map);
 const reliefLayer=L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png",{opacity:.45,maxNativeZoom:16,maxZoom:18,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>'});
 let layerCtl=null;
 function buildLayerControl(){
@@ -943,11 +974,19 @@ PASSES.forEach(p=>L.marker([p.lat,p.lon],{icon:diaIcon(),title:p.name}).addTo(pa
 const triIcon=()=>L.divIcon({className:"",html:'<span class="tri"></span>',iconSize:[12,11],iconAnchor:[6,8]});
 function drawHazards(){
   quakeLayer.clearLayers(); volcLayer.clearLayers();
-  QUAKES.forEach(q=>L.marker([q.lat,q.lon],{icon:sqIcon(),zIndexOffset:-100}).addTo(quakeLayer)
+  QUAKES.filter(q=>q.mag!=null&&q.mag>=4).forEach(q=>L.marker([q.lat,q.lon],{icon:sqIcon(),zIndexOffset:-100}).addTo(quakeLayer)
     .bindPopup(()=>`<strong>M${q.mag!=null?q.mag.toFixed(1):"–"}</strong> ${esc(lang==="ja"?q.name:q.en)}<br>${esc(new Date(q.time).toLocaleString(locale(),{timeZone:JP_TZ,month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+" JST")}<br><span style="color:#5A6B7B">気象庁 JMA</span>`));
   VOLCS.forEach(v=>L.marker([v.lat,v.lon],{icon:triIcon()}).addTo(volcLayer).bindPopup(()=>`<strong>🌋 ${esc(v.name)}</strong>`));
 }
 window.addEventListener("resize",()=>map.invalidateSize());
+function setHazards(on){
+  [quakeLayer,volcLayer].forEach(l=>on?l.addTo(map):map.removeLayer(l));
+  $("hazsw").checked=on; $("hazrows").hidden=!on;
+  try{localStorage.setItem("studless-haz",on?"1":"0")}catch(e){}
+}
+$("hazsw").addEventListener("change",e=>setHazards(e.target.checked));
+map.on("overlayadd overlayremove",e=>{ if(e.layer===quakeLayer||e.layer===volcLayer){ const on=map.hasLayer(quakeLayer)||map.hasLayer(volcLayer); $("hazsw").checked=on; $("hazrows").hidden=!on } });
+(()=>{let on=false; try{on=localStorage.getItem("studless-haz")==="1"}catch(e){} setHazards(on)})();
 /* Optional rental store layer: fill stores.json (see README) */
 fetch("stores.json").then(r=>r.ok?r.json():[]).then(list=>{
   (list||[]).forEach(s=>{
@@ -967,7 +1006,7 @@ function buildFooter(){
    esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.1';
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.4';
 }
 function setLang(code){
   lang=I18N[code]?code:"en";
@@ -975,7 +1014,7 @@ function setLang(code){
   document.documentElement.lang=locale();
   document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
   document.title=t("title"); $("lang").value=lang;
-  buildFooter(); buildLayerControl(); showWeeks(); if($("jptime").textContent) tickJP();
+  buildFooter(); buildLayerControl(); showWeeks(); if($("d1").value) paintDates(); if(calFor) drawCal(); if($("jptime").textContent) tickJP();
   if(lastRun) render(lastRun);
   paintOverview();
   if(TSUNAMI) $("tsu").textContent="⚠ "+t("hzTsu",{a:TSUNAMI});
@@ -998,6 +1037,49 @@ $("route").addEventListener("change",()=>{ if($("pick").value.trim()&&$("dest").
 /* The last day can never be before the first day: the date pickers block earlier days,
    and moving the first day later carries the last day along, keeping the trip length. */
 let tripLen=Math.max(0,Math.round((new Date($("d2").value)-new Date($("d1").value))/864e5));
+/* ---- Calendar with ISO calendar weeks (CW/KW) on the left; weeks start Monday ---- */
+let calFor=null, calMonth=null;
+const fmtLong=s=>new Date(s+"T00:00:00").toLocaleDateString(locale(),{weekday:"short",year:"numeric",month:"short",day:"numeric"});
+function paintDates(){
+  for(const id of ["d1","d2"]){const v=$(id).value;
+    $(id+"b").innerHTML=v?`<span>${esc(fmtLong(v))}</span><span class="cw">${esc(t("cwShort"))} ${isoWeek(v)}</span>`:"–"}
+}
+function openCal(id){
+  calFor=id; calMonth=($(id).value||jpToday()).slice(0,7);
+  const c=$("cal"); $(id+"b").parentElement.appendChild(c);
+  c.style.left=id==="d2"?"auto":"0"; c.style.right=id==="d2"?"0":"auto";
+  c.hidden=false; drawCal();
+}
+function closeCal(){ $("cal").hidden=true; calFor=null }
+function drawCal(){
+  const [y,m]=calMonth.split("-").map(Number), first=new Date(y,m-1,1);
+  const d=new Date(y,m-1,1-((first.getDay()+6)%7));
+  const min=calFor==="d2"?($("d1").value||jpToday()):jpToday();
+  const a=$("d1").value,b=$("d2").value,td=jpToday(),sel=$(calFor).value;
+  const wd=[...Array(7)].map((_,i)=>new Date(2026,0,5+i).toLocaleDateString(locale(),{weekday:"narrow"}));
+  let h=`<div class="cal-h"><button type="button" data-nav="-1" aria-label="${esc(t("prevMonth"))}">‹</button><span>${esc(first.toLocaleDateString(locale(),{year:"numeric",month:"long"}))}</span><button type="button" data-nav="1" aria-label="${esc(t("nextMonth"))}">›</button></div>`;
+  h+=`<table><thead><tr><th class="cw">${esc(t("cwShort"))}</th>${wd.map(w=>`<th>${esc(w)}</th>`).join("")}</tr></thead><tbody>`;
+  for(let r=0;r<6;r++){
+    h+=`<tr><td class="cw">${isoWeek(iso(d))}</td>`;
+    for(let c=0;c<7;c++){
+      const s=iso(d), cls=[d.getMonth()!==m-1?"out":"", s===sel?"sel":"", (a&&b&&s>=a&&s<=b&&s!==sel)?"inr":"", s===td?"today":""].join(" ").trim();
+      h+=`<td><button type="button" data-day="${s}" class="${cls}" ${s<min?"disabled":""}>${d.getDate()}</button></td>`;
+      d.setDate(d.getDate()+1);
+    }
+    h+="</tr>";
+    if(d.getFullYear()*12+d.getMonth()>y*12+m-1) break;
+  }
+  $("cal").innerHTML=h+"</tbody></table>";
+}
+$("cal").addEventListener("click",e=>{
+  const n=e.target.closest("[data-nav]");
+  if(n){const [y,m]=calMonth.split("-").map(Number); calMonth=iso(new Date(y,m-1+(+n.dataset.nav),1)).slice(0,7); drawCal(); return}
+  const b=e.target.closest("[data-day]");
+  if(b&&!b.disabled){const id=calFor; $(id).value=b.dataset.day; closeCal(); syncDates(id); $(id+"b").focus()}
+});
+["d1","d2"].forEach(id=>$(id+"b").addEventListener("click",()=>{ if(calFor===id&&!$("cal").hidden) closeCal(); else openCal(id) }));
+document.addEventListener("click",e=>{ if(!$("cal").hidden&&!e.target.closest(".cal")&&!e.target.closest(".datebtn")) closeCal() });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("cal").hidden){const id=calFor; closeCal(); $(id+"b").focus()} });
 function syncDates(changed){
   const td=jpToday();
   if($("d1").value&&$("d1").value<td) $("d1").value=td;
@@ -1006,11 +1088,11 @@ function syncDates(changed){
   if(changed==="d2"&&a&&$("d2").value&&$("d2").value<a) $("d2").value=a;
   $("d1").min=td; $("d2").min=a||td;
   if(a&&$("d2").value) tripLen=Math.round((new Date($("d2").value)-new Date(a))/864e5);
-  showWeeks(); drawOverview();
+  showWeeks(); paintDates(); drawOverview();
 }
 $("d1").addEventListener("change",()=>syncDates("d1"));
 $("d2").addEventListener("change",()=>syncDates("d2"));
-$("d1").min=jpToday(); $("d2").min=$("d1").value;
+$("d1").min=jpToday(); $("d2").min=$("d1").value; paintDates();
 /* Japan clock under the dates; also rolls the minimum date over at midnight in Japan */
 function tickJP(){
   $("jptime").textContent=t("jpTime",{d:new Date().toLocaleString(locale(),{timeZone:JP_TZ,weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})});
