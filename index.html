@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-US" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -15,7 +15,7 @@
   --navy:#1F4E79; --orange:#FB8102; --gold:#C8A657;
   --bg:#F7F9FB; --surface:#FFFFFF; --ink:#14212E; --muted:#5A6B7B; --line:#D9E1E8;
   --red:#C62828; --amber:#E0A100; --green:#2E7D32; --grey:#9AA7B3;
-  --sign-bg:#1F4E79; --sign-ink:#FFFFFF;
+  --sign-bg:#1F4E79; --sign-ink:#FFFFFF; --chip:#EEF3F8;
   color-scheme:light;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
@@ -25,26 +25,33 @@
   :root{
     --bg:#0E1822; --surface:#16232F; --ink:#E8EEF3; --muted:#9FB0BF; --line:#2A3B4B;
     --red:#EF5350; --amber:#F2C14E; --green:#66BB6A; --grey:#6B7C8C;
-    --sign-bg:#245A8C; color-scheme:dark;
+    --sign-bg:#245A8C; --chip:#1E3142; color-scheme:dark;
   }
 }
 *,*::before,*::after{box-sizing:inherit}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;font-size:16px;line-height:1.5}
 .app{display:grid;grid-template-columns:420px 1fr;min-height:100%}
-.panel{padding:20px 22px 28px;overflow-y:auto;border-right:1px solid var(--line);background:var(--surface)}
+.panel{padding:20px 22px 28px;overflow-y:auto;border-inline-end:1px solid var(--line);background:var(--surface)}
 .mapwrap{position:relative;min-height:60vh}
 #map{position:absolute;inset:0}
-header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-header img{flex:none;display:block}
-h1{font-size:1.5rem;font-weight:900;line-height:1.15;margin:0;letter-spacing:-.01em}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.top img{flex:none;display:block}
+.top .grow{flex:1;min-width:0}
+h1{font-size:1.45rem;font-weight:900;line-height:1.15;margin:0;letter-spacing:-.01em}
 h1 small{display:block;font-size:.8rem;font-weight:400;color:var(--muted);letter-spacing:0}
+select{font:inherit;font-size:.85rem;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);max-width:9.5rem}
 p.lede{margin:0 0 18px;color:var(--muted);font-size:.95rem}
 label{display:block;font-weight:700;font-size:.9rem;margin:12px 0 4px}
 .hint{font-weight:400;color:var(--muted)}
 input{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
-input:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.quick button{font:inherit;font-size:.85rem;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--chip);color:var(--ink);cursor:pointer}
+.quick button:hover{border-color:var(--navy)}
+.weeks{margin-inline-start:auto;font-size:.85rem;font-weight:700;color:var(--navy)}
+@media (prefers-color-scheme:dark){.weeks{color:var(--gold)}}
 button.go{margin-top:16px;width:100%;font:inherit;font-weight:700;padding:12px;border:0;border-radius:8px;background:var(--orange);color:#fff;cursor:pointer}
 button.go:disabled{opacity:.6;cursor:wait}
 .err{color:var(--red);font-size:.9rem;margin-top:10px;min-height:1em}
@@ -53,28 +60,40 @@ button.go:disabled{opacity:.6;cursor:wait}
 .sign{margin:22px 0 14px;background:var(--sign-bg);color:var(--sign-ink);border-radius:10px;padding:5px}
 .sign-inner{border:2px solid var(--sign-ink);border-radius:7px;padding:14px 16px;display:flex;gap:14px;align-items:center}
 .lamp{flex:none;width:44px;height:44px;border-radius:50%;border:3px solid var(--sign-ink)}
-.sign .ja{font-size:.85rem;opacity:.85}
-.sign .en{font-size:1.45rem;font-weight:900;line-height:1.1}
+.sign .sub{font-size:.85rem;opacity:.85}
+.sign .main{font-size:1.4rem;font-weight:900;line-height:1.15}
 .l2 .lamp{background:var(--red)} .l1 .lamp{background:var(--amber)} .l0 .lamp{background:var(--green)}
-.reasons{margin:0 0 14px;padding-left:1.1em;font-size:.93rem}
+.haz{border-inline-start:4px solid var(--gold);background:var(--chip);border-radius:6px;padding:8px 12px;margin:0 0 14px;font-size:.9rem}
+.haz h2{margin:0 0 4px;font-size:.95rem}
+.haz ul{margin:0;padding-inline-start:1.1em}
+.haz.ok{border-inline-start-color:var(--green)}
+.reasons{margin:0 0 14px;padding-inline-start:1.1em;font-size:.93rem}
 .reasons li{margin-bottom:4px}
 table{width:100%;border-collapse:collapse;font-size:.88rem}
-th,td{text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
-th:first-child,td:first-child{text-align:left}
+th,td{text-align:end;padding:6px 4px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:start}
 th{font-weight:700;color:var(--muted)}
+tr.wk td{font-weight:700;color:var(--navy);background:var(--chip);border-bottom:0;padding-top:4px;padding-bottom:4px}
+@media (prefers-color-scheme:dark){tr.wk td{color:var(--gold)}}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle}
 .d2{background:var(--red)}.d1{background:var(--amber)}.d0{background:var(--green)}.dn{background:var(--grey)}
-h2{font-size:1rem;margin:18px 0 6px}
+.sq{display:inline-block;width:10px;height:10px;background:var(--gold);border:1.5px solid var(--navy);vertical-align:middle}
+.dia{display:inline-block;width:9px;height:9px;background:var(--navy);border:1.5px solid #fff;outline:1px solid var(--navy);transform:rotate(45deg);vertical-align:middle}
+select.wide{width:100%;max-width:none;padding:10px 12px;font-size:1rem}
+.obs{font-size:.8rem;color:var(--red);font-weight:700}
+.tri{display:inline-block;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid var(--orange);vertical-align:middle}
+h3{font-size:1rem;margin:18px 0 6px}
 .place{font-size:.9rem;color:var(--muted);margin:2px 0 8px}
 footer{margin-top:22px;font-size:.78rem;color:var(--muted)}
 footer a{color:inherit}
-.legend{position:absolute;z-index:500;left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.8rem;line-height:1.7}
-.mapnote{position:absolute;z-index:500;right:10px;top:10px;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.78rem;max-width:60%}
+.legend{position:absolute;z-index:500;inset-inline-start:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.8rem;line-height:1.75}
+.mapnote{position:absolute;z-index:500;inset-inline-start:56px;top:10px;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.78rem;max-width:calc(100% - 130px)}
+.tsu{position:absolute;z-index:600;inset-inline:56px 56px;top:52px;background:var(--red);color:#fff;border-radius:8px;padding:8px 12px;font-size:.88rem;font-weight:700;display:none}
 .leaflet-popup-content{font-family:inherit}
 .popbtn{margin-top:6px;font:inherit;font-size:.8rem;padding:4px 8px;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:6px;cursor:pointer}
 @media (max-width:820px){
   .app{grid-template-columns:1fr}
-  .panel{border-right:0;border-bottom:1px solid var(--line)}
+  .panel{border-inline-end:0;border-bottom:1px solid var(--line)}
   .mapwrap{height:70vh}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -83,40 +102,49 @@ footer a{color:inherit}
 <body>
 <div class="app">
 <section class="panel">
-  <header>
+  <div class="top">
     <img src="data:image/png;base64,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" width="44" height="44" alt="Outcome LLC logo">
-    <h1>Studless Check Japan<small>スタッドレスタイヤ、必要？ · Outcome LLC</small></h1>
-  </header>
-  <p class="lede">Renting a car in Japan this winter? Enter a postal code or city for where you’ll pick it up, where you’re driving and when. We check the season and the live forecast and tell you whether to add studless (winter) tires.</p>
-
-  <label for="pick">Pickup <span class="hint">postal code or city</span></label>
-  <input id="pick" autocomplete="off" placeholder="060-0806, Sapporo or 札幌">
-  <label for="dest">Destination <span class="hint">optional · postal code or city</span></label>
-  <input id="dest" autocomplete="off" placeholder="Hakuba, 白馬村 or 399-9301">
-  <div class="row">
-    <div><label for="d1">First day</label><input id="d1" type="date"></div>
-    <div><label for="d2">Last day</label><input id="d2" type="date"></div>
+    <div class="grow"><h1><span data-i18n="title">Studless Check Japan</span><small>スタッドレスタイヤ、必要？ · Outcome LLC</small></h1></div>
+    <select id="lang" aria-label="Language"></select>
   </div>
-  <button class="go" id="go">Check my trip</button>
+  <p class="lede" data-i18n="lede"></p>
+
+  <label for="pick"><span data-i18n="pick"></span> <span class="hint" data-i18n="pickHint"></span></label>
+  <input id="pick" autocomplete="off" placeholder="060-0806 · Sapporo · 札幌">
+  <label for="dest"><span data-i18n="dest"></span> <span class="hint" data-i18n="destHint"></span></label>
+  <input id="dest" autocomplete="off" placeholder="Hakuba · 白馬村 · 399-9301">
+  <label for="via"><span data-i18n="via"></span> <span class="hint" data-i18n="viaHint"></span></label>
+  <select id="via" class="wide"></select>
+  <div class="row">
+    <div><label for="d1" data-i18n="first"></label><input id="d1" type="date"></div>
+    <div><label for="d2" data-i18n="last"></label><input id="d2" type="date"></div>
+  </div>
+  <div class="quick">
+    <button type="button" data-q="today" data-i18n="today"></button>
+    <button type="button" data-q="week" data-i18n="thisWeek"></button>
+    <button type="button" data-q="next" data-i18n="nextWeek"></button>
+    <span class="weeks" id="weeks"></span>
+  </div>
+  <button class="go" id="go" data-i18n="check"></button>
   <div class="err" id="err" role="alert"></div>
 
   <div id="out" aria-live="polite"></div>
 
-  <footer>
-    Advice only, not a guarantee. Conditions change fast in the mountains, and many prefectures legally require winter tires or chains on snowy roads. Check your rental branch’s tire options and NEXCO road notices before you drive.<br><br>
-    Weather: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · Postal lookup: zipcloud · Place names: Open-Meteo, GSI · Map and geocoding: <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a><br>
-    Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.1
-  </footer>
+  <footer id="foot"></footer>
 </section>
 
 <section class="mapwrap">
-  <div id="map" role="region" aria-label="Map of snow risk across Japan"></div>
-  <div class="mapnote" id="mapnote">Loading forecast…</div>
+  <div id="map" dir="ltr" role="region" aria-label="Map"></div>
+  <div class="mapnote" id="mapnote"></div>
+  <div class="tsu" id="tsu" role="alert"></div>
   <div class="legend">
-    <span class="dot d2"></span> Studless required<br>
-    <span class="dot d1"></span> Recommended<br>
-    <span class="dot d0"></span> Not needed<br>
-    <span class="dot dn"></span> No data
+    <span class="dot d2"></span> <span data-i18n="lv2"></span><br>
+    <span class="dot d1"></span> <span data-i18n="lv1"></span><br>
+    <span class="dot d0"></span> <span data-i18n="lv0"></span><br>
+    <span class="dot dn"></span> <span data-i18n="lgN"></span><br>
+    <span class="sq"></span> <span data-i18n="lgQuake"></span><br>
+    <span class="tri"></span> <span data-i18n="lgVolc"></span><br>
+    <span class="dia" style="margin:0 2px"></span> <span data-i18n="lyP"></span>
   </div>
 </section>
 </div>
@@ -124,8 +152,83 @@ footer a{color:inherit}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 "use strict";
-/* Reference points: prefecture capitals plus known snow and mountain areas.
-   zone: heavy = snow country, mountain = high ground / passes, moderate = occasional snow, low = rare snow */
+/* ================= Languages ================= */
+const LANGS=[["en","English (US)","en-US"],["ja","日本語","ja-JP"],["de","Deutsch","de-DE"],["es","Español","es-ES"]];
+const I18N={
+en:{title:"Studless Check Japan",lede:"Renting a car in Japan this winter? Enter a postal code or city for where you’ll pick it up, where you’re driving and when. We check the season and the live forecast and tell you whether to add studless (winter) tires.",
+pick:"Pickup",pickHint:"postal code or city",dest:"Destination",destHint:"optional · postal code or city",first:"First day",last:"Last day",today:"Today",thisWeek:"This week",nextWeek:"Next week",wk:"Week {n}",
+check:"Check my trip",checking:"Checking…",lv2:"Studless required",lv1:"Studless recommended",lv0:"Not needed",
+zHeavy:"snow country",zMountain:"a mountain area",zModerate:"an occasional-snow area",zLow:"a low-snow area",
+rSeason2:"{p} is in {z} and your dates fall in the snow season.",rSeason1:"{p} is in {z} where snow and ice are possible at this time of year.",
+rFc2:"Snow or freezing rain is in the forecast at {p} during your trip.",rFc1:"Overnight lows at or below 0 °C are forecast at {p}, so watch for black ice.",
+rPartial:"Only {c} of your {n} days are inside the 16-day forecast; the rest use the seasonal pattern.",rBeyond:"Your dates are beyond the 16-day forecast, so this uses the seasonal pattern for {p}.",
+rElev:"{p} sits at about {m} m, where conditions are harsher than in the valleys.",rNone:"No snow or freezing temperatures expected along your trip, and it’s outside the snow season for these areas.",
+thDay:"Day",thLow:"Low",thSnow:"Snow",thPrecip:"Rain/snow",beyond:"Beyond forecast",stock:"Studless stock is limited at many branches. Ask for it when you book, not at the counter.",
+eDates:"Choose your first and last day.",eOrder:"The last day comes before the first day.",eEmpty:"Enter a postal code or a city name.",ePostal:"Postal codes in Japan have 7 digits, like 060-0806.",eNoAddr:"No address found for {c}.",eOkinawa:"Okinawa doesn’t get snow. Normal tires are fine there.",eNotFound:"Couldn’t find “{q}”. Try another spelling, the Japanese name (for example 白馬村), or the postal code.",ePlace:"Couldn’t place {a} on the map.",eTimeout:"Postal lookup timed out.",eLookup:"Postal lookup failed.",eForecast:"The forecast service isn’t responding. Try again shortly.",
+lgN:"No data",lgQuake:"Earthquake, past 7 days",lgVolc:"Volcano",mapLoading:"Loading forecast…",mapShowing:"Showing {n} days from {d}. Tap a dot for details.",mapErr:"Forecast unavailable right now. Try again shortly.",
+hazTitle:"Hazards near your route",hzQuake:"M{m} earthquake {k} km from {p} on {d}. Check for road damage and closures.",hzVolc:"The {v} volcano is {k} km from {p}. During eruptions, ash makes roads slippery and roads can close. Check JMA volcano warnings before you go.",hzTsu:"Tsunami warning in effect: {a}. Stay off coastal roads.",hzNone:"No recent strong earthquakes or tsunami warnings near your route.",
+usePick:"Use as pickup",studless:"Studless",askBranch:"ask the branch",disclaimer:"Advice only, not a guarantee. Conditions change fast in the mountains, and many prefectures legally require winter tires or chains on snowy roads. Check your rental branch’s tire options and NEXCO road notices before you drive.",
+cWeather:"Weather",cPostal:"Postal lookup",cNames:"Place names",cMap:"Map and geocoding",cHaz:"Earthquakes and tsunami",lyV:"Snow-tire verdict",lyQ:"Earthquakes (7 days)",lyVo:"Volcanoes",lyS:"Rental stores"},
+ja:{title:"スタッドレス・チェック・ジャパン",lede:"この冬、日本でレンタカーを借りますか？受け取り場所の郵便番号または市区町村名、行き先、日程を入力してください。季節と最新の天気予報をもとに、スタッドレスタイヤ（冬用タイヤ）を付けるべきかをお知らせします。",
+pick:"受け取り場所",pickHint:"郵便番号または市区町村",dest:"行き先",destHint:"任意・郵便番号または市区町村",first:"初日",last:"最終日",today:"今日",thisWeek:"今週",nextWeek:"来週",wk:"第{n}週",
+check:"旅程をチェック",checking:"チェック中…",lv2:"スタッドレス必須",lv1:"スタッドレス推奨",lv0:"ノーマルタイヤで可",
+zHeavy:"豪雪地帯",zMountain:"山間部",zModerate:"時々雪が降る地域",zLow:"雪の少ない地域",
+rSeason2:"{p}は{z}にあり、日程が降雪シーズンに当たります。",rSeason1:"{p}は{z}にあり、この時期は雪や凍結の可能性があります。",
+rFc2:"旅行中、{p}で雪または着氷性の雨が予報されています。",rFc1:"{p}の最低気温は0 °C以下の予報です。路面凍結（ブラックアイスバーン）に注意してください。",
+rPartial:"{n}日間のうち16日予報の範囲内は{c}日のみです。残りは季節の傾向で判断しています。",rBeyond:"日程が16日予報の範囲外のため、{p}の季節の傾向で判断しています。",
+rElev:"{p}は標高約{m} mで、平地より条件が厳しくなります。",rNone:"旅程中に雪や凍結の予報はなく、これらの地域は降雪シーズン外です。",
+thDay:"日付",thLow:"最低気温",thSnow:"降雪",thPrecip:"降水",beyond:"予報範囲外",stock:"多くの店舗でスタッドレスタイヤの在庫は限られています。カウンターではなく、予約時に申し込んでください。",
+eDates:"初日と最終日を選んでください。",eOrder:"最終日が初日より前になっています。",eEmpty:"郵便番号または市区町村名を入力してください。",ePostal:"日本の郵便番号は7桁です（例：060-0806）。",eNoAddr:"{c}の住所が見つかりません。",eOkinawa:"沖縄は雪が降りません。ノーマルタイヤで大丈夫です。",eNotFound:"「{q}」が見つかりません。別の表記、日本語の地名（例：白馬村）、または郵便番号でお試しください。",ePlace:"{a}を地図上で特定できません。",eTimeout:"郵便番号の検索がタイムアウトしました。",eLookup:"郵便番号の検索に失敗しました。",eForecast:"天気予報サービスが応答していません。しばらくしてからお試しください。",
+lgN:"データなし",lgQuake:"地震（過去7日）",lgVolc:"火山",mapLoading:"予報を読み込み中…",mapShowing:"{d}から{n}日間を表示中。点をタップすると詳細が見られます。",mapErr:"現在、予報を取得できません。しばらくしてからお試しください。",
+hazTitle:"ルート付近の災害情報",hzQuake:"{d}、{p}から{k} kmの地点でM{m}の地震がありました。道路の損傷や通行止めを確認してください。",hzVolc:"{v}は{p}から{k} kmです。噴火時は火山灰で路面が滑りやすくなり、通行止めになることがあります。出発前に気象庁の噴火警報を確認してください。",hzTsu:"津波警報・注意報が発表中：{a}。沿岸の道路は避けてください。",hzNone:"ルート付近で最近の強い地震や津波警報はありません。",
+usePick:"受け取り場所に設定",studless:"スタッドレス",askBranch:"店舗にご確認ください",disclaimer:"参考情報であり、保証するものではありません。山間部の状況は急に変わります。また多くの都道府県では、積雪・凍結路で冬用タイヤまたはチェーンの装着が義務付けられています。運転前にレンタカー店舗のタイヤオプションとNEXCOの道路情報を確認してください。",
+cWeather:"天気",cPostal:"郵便番号検索",cNames:"地名",cMap:"地図・ジオコーディング",cHaz:"地震・津波",lyV:"タイヤ判定",lyQ:"地震（7日）",lyVo:"火山",lyS:"レンタカー店舗"},
+de:{title:"Studless Check Japan",lede:"Sie mieten diesen Winter ein Auto in Japan? Geben Sie Postleitzahl oder Ort der Abholung, Ihr Ziel und die Reisedaten ein. Wir prüfen Jahreszeit und aktuelle Wettervorhersage und sagen Ihnen, ob Sie Winterreifen (Studless) dazubuchen sollten.",
+pick:"Abholung",pickHint:"Postleitzahl oder Ort",dest:"Ziel",destHint:"optional · Postleitzahl oder Ort",first:"Erster Tag",last:"Letzter Tag",today:"Heute",thisWeek:"Diese Woche",nextWeek:"Nächste Woche",wk:"KW {n}",
+check:"Reise prüfen",checking:"Wird geprüft…",lv2:"Winterreifen Pflicht",lv1:"Winterreifen empfohlen",lv0:"Nicht nötig",
+zHeavy:"einem Schneegebiet",zMountain:"einem Berggebiet",zModerate:"einem Gebiet mit gelegentlichem Schnee",zLow:"einem schneearmen Gebiet",
+rSeason2:"{p} liegt in {z}, und Ihre Reise fällt in die Schneesaison.",rSeason1:"{p} liegt in {z}, wo zu dieser Jahreszeit Schnee und Glätte möglich sind.",
+rFc2:"Für {p} sind während Ihrer Reise Schnee oder gefrierender Regen vorhergesagt.",rFc1:"Für {p} sind nächtliche Tiefstwerte von 0 °C oder darunter vorhergesagt – Vorsicht vor Glatteis.",
+rPartial:"Nur {c} Ihrer {n} Tage liegen in der 16-Tage-Vorhersage; für den Rest gilt das saisonale Muster.",rBeyond:"Ihre Reisedaten liegen außerhalb der 16-Tage-Vorhersage, daher gilt das saisonale Muster für {p}.",
+rElev:"{p} liegt auf etwa {m} m Höhe, wo die Bedingungen härter sind als in den Tälern.",rNone:"Auf Ihrer Route werden weder Schnee noch Frost erwartet, und diese Gebiete liegen außerhalb der Schneesaison.",
+thDay:"Tag",thLow:"Tief",thSnow:"Schnee",thPrecip:"Regen/Schnee",beyond:"Außerhalb der Vorhersage",stock:"Viele Filialen haben nur wenige Winterreifen. Fragen Sie bei der Buchung danach, nicht erst am Schalter.",
+eDates:"Wählen Sie den ersten und den letzten Tag.",eOrder:"Der letzte Tag liegt vor dem ersten Tag.",eEmpty:"Geben Sie eine Postleitzahl oder einen Ort ein.",ePostal:"Japanische Postleitzahlen haben 7 Ziffern, z. B. 060-0806.",eNoAddr:"Keine Adresse für {c} gefunden.",eOkinawa:"In Okinawa schneit es nicht. Normale Reifen reichen dort.",eNotFound:"„{q}“ wurde nicht gefunden. Versuchen Sie eine andere Schreibweise, den japanischen Namen (z. B. 白馬村) oder die Postleitzahl.",ePlace:"{a} konnte nicht auf der Karte gefunden werden.",eTimeout:"Die Postleitzahlsuche hat zu lange gedauert.",eLookup:"Die Postleitzahlsuche ist fehlgeschlagen.",eForecast:"Der Vorhersagedienst antwortet nicht. Bitte versuchen Sie es gleich noch einmal.",
+lgN:"Keine Daten",lgQuake:"Erdbeben, letzte 7 Tage",lgVolc:"Vulkan",mapLoading:"Vorhersage wird geladen…",mapShowing:"{n} Tage ab {d}. Tippen Sie auf einen Punkt für Details.",mapErr:"Vorhersage derzeit nicht verfügbar. Bitte gleich noch einmal versuchen.",
+hazTitle:"Gefahren in der Nähe Ihrer Route",hzQuake:"Erdbeben der Stärke M{m}, {k} km von {p} entfernt, am {d}. Prüfen Sie Straßenschäden und Sperrungen.",hzVolc:"Der Vulkan {v} liegt {k} km von {p} entfernt. Bei Ausbrüchen macht Asche die Straßen rutschig, und Straßen können gesperrt werden. Prüfen Sie vor der Fahrt die Vulkanwarnungen der JMA.",hzTsu:"Tsunamiwarnung aktiv: {a}. Meiden Sie Küstenstraßen.",hzNone:"Keine starken Erdbeben oder Tsunamiwarnungen in letzter Zeit in der Nähe Ihrer Route.",
+usePick:"Als Abholort verwenden",studless:"Winterreifen",askBranch:"bei der Filiale fragen",disclaimer:"Nur eine Empfehlung, keine Garantie. In den Bergen ändern sich die Bedingungen schnell, und viele Präfekturen schreiben auf verschneiten Straßen Winterreifen oder Schneeketten vor. Prüfen Sie vor der Fahrt die Reifenoptionen Ihrer Mietstation und die Straßenmeldungen von NEXCO.",
+cWeather:"Wetter",cPostal:"Postleitzahlsuche",cNames:"Ortsnamen",cMap:"Karte und Geokodierung",cHaz:"Erdbeben und Tsunami",lyV:"Reifen-Empfehlung",lyQ:"Erdbeben (7 Tage)",lyVo:"Vulkane",lyS:"Mietstationen"},
+es:{title:"Studless Check Japón",lede:"¿Vas a alquilar un coche en Japón este invierno? Introduce el código postal o la ciudad donde lo recoges, adónde vas y cuándo. Revisamos la temporada y el pronóstico en vivo y te decimos si conviene añadir neumáticos de invierno (studless).",
+pick:"Recogida",pickHint:"código postal o ciudad",dest:"Destino",destHint:"opcional · código postal o ciudad",first:"Primer día",last:"Último día",today:"Hoy",thisWeek:"Esta semana",nextWeek:"Próxima semana",wk:"Semana {n}",
+check:"Revisar mi viaje",checking:"Revisando…",lv2:"Neumáticos de invierno obligatorios",lv1:"Neumáticos de invierno recomendados",lv0:"No hacen falta",
+zHeavy:"una zona de nieve abundante",zMountain:"una zona de montaña",zModerate:"una zona con nieve ocasional",zLow:"una zona con poca nieve",
+rSeason2:"{p} está en {z} y tus fechas caen en temporada de nieve.",rSeason1:"{p} está en {z} donde puede haber nieve y hielo en esta época del año.",
+rFc2:"Se pronostica nieve o lluvia helada en {p} durante tu viaje.",rFc1:"Se pronostican mínimas nocturnas de 0 °C o menos en {p}; cuidado con el hielo en la carretera.",
+rPartial:"Solo {c} de tus {n} días están dentro del pronóstico de 16 días; el resto usa el patrón de la temporada.",rBeyond:"Tus fechas están fuera del pronóstico de 16 días, así que se usa el patrón de la temporada para {p}.",
+rElev:"{p} está a unos {m} m de altitud, con condiciones más duras que en los valles.",rNone:"No se espera nieve ni heladas en tu ruta, y estas zonas están fuera de la temporada de nieve.",
+thDay:"Día",thLow:"Mín.",thSnow:"Nieve",thPrecip:"Lluvia/nieve",beyond:"Fuera del pronóstico",stock:"Muchas oficinas tienen pocos neumáticos de invierno. Pídelos al reservar, no en el mostrador.",
+eDates:"Elige el primer y el último día.",eOrder:"El último día es anterior al primero.",eEmpty:"Introduce un código postal o una ciudad.",ePostal:"Los códigos postales de Japón tienen 7 dígitos, como 060-0806.",eNoAddr:"No se encontró ninguna dirección para {c}.",eOkinawa:"En Okinawa no nieva. Los neumáticos normales sirven.",eNotFound:"No se encontró “{q}”. Prueba otra grafía, el nombre en japonés (por ejemplo 白馬村) o el código postal.",ePlace:"No se pudo ubicar {a} en el mapa.",eTimeout:"La búsqueda del código postal tardó demasiado.",eLookup:"Falló la búsqueda del código postal.",eForecast:"El servicio de pronóstico no responde. Inténtalo de nuevo en un momento.",
+lgN:"Sin datos",lgQuake:"Terremoto, últimos 7 días",lgVolc:"Volcán",mapLoading:"Cargando pronóstico…",mapShowing:"Mostrando {n} días desde el {d}. Toca un punto para ver detalles.",mapErr:"El pronóstico no está disponible ahora. Inténtalo en un momento.",
+hazTitle:"Riesgos cerca de tu ruta",hzQuake:"Terremoto M{m} a {k} km de {p} el {d}. Revisa daños y cierres de carreteras.",hzVolc:"El volcán {v} está a {k} km de {p}. En una erupción, la ceniza vuelve resbaladizas las carreteras y puede cerrarlas. Consulta las alertas volcánicas de la JMA antes de salir.",hzTsu:"Alerta de tsunami activa: {a}. Evita las carreteras costeras.",hzNone:"No hay terremotos fuertes recientes ni alertas de tsunami cerca de tu ruta.",
+usePick:"Usar como recogida",studless:"Neumáticos de invierno",askBranch:"pregunta en la oficina",disclaimer:"Solo orientativo, sin garantía. En la montaña las condiciones cambian rápido, y muchas prefecturas exigen por ley neumáticos de invierno o cadenas en carreteras con nieve. Consulta las opciones de neumáticos de tu oficina de alquiler y los avisos de carreteras de NEXCO antes de conducir.",
+cWeather:"Tiempo",cPostal:"Códigos postales",cNames:"Nombres de lugares",cMap:"Mapa y geocodificación",cHaz:"Terremotos y tsunamis",lyV:"Veredicto de neumáticos",lyQ:"Terremotos (7 días)",lyVo:"Volcanes",lyS:"Oficinas de alquiler"}
+};
+const I18N_V14={
+en:{via:"Via mountain pass",viaHint:"optional",viaAuto:"Find automatically",passTitle:"Mountain passes on your route",passNote:"Found along the direct line between pickup and destination. If your road goes another way, choose a pass under “Via mountain pass”.",thPass:"Pass",thElev:"Height",thMin:"Lowest",thSnowTot:"Snow total",rPass:"Your route likely crosses {v} at about {m} m, where conditions are worse than at either end.",rObsSnow:"Snow on the ground now: {cm} cm at {s} station ({m} m, {k} km away).",rObsNone:"No snow on the ground now at {s} station ({m} m, {k} km away).",obsNow:"{cm} cm on the ground now",lyP:"Mountain passes",cObs:"Snow on the ground"},
+ja:{via:"経由する峠",viaHint:"任意",viaAuto:"自動で検出",passTitle:"ルート上の峠",passNote:"受け取り場所と行き先を結ぶ直線沿いで検出しています。別の道を通る場合は「経由する峠」で選んでください。",thPass:"峠",thElev:"標高",thMin:"最低気温",thSnowTot:"降雪合計",rPass:"ルートは標高約{m} mの{v}を通る可能性が高く、出発地・目的地より条件が厳しくなります。",rObsSnow:"現在の積雪：{s}観測所で{cm} cm（標高{m} m、{k} km先）。",rObsNone:"{s}観測所では現在積雪はありません（標高{m} m、{k} km先）。",obsNow:"現在の積雪 {cm} cm",lyP:"峠",cObs:"積雪深"},
+de:{via:"Über Pass",viaHint:"optional",viaAuto:"Automatisch finden",passTitle:"Bergpässe auf Ihrer Route",passNote:"Gefunden entlang der direkten Linie zwischen Abholung und Ziel. Wenn Ihre Straße anders verläuft, wählen Sie einen Pass unter „Über Pass“.",thPass:"Pass",thElev:"Höhe",thMin:"Tiefstwert",thSnowTot:"Schnee gesamt",rPass:"Ihre Route führt wahrscheinlich über {v} auf etwa {m} m, wo die Bedingungen schlechter sind als an Start und Ziel.",rObsSnow:"Aktuell liegt Schnee: {cm} cm an der Station {s} ({m} m, {k} km entfernt).",rObsNone:"Aktuell kein Schnee an der Station {s} ({m} m, {k} km entfernt).",obsNow:"aktuell {cm} cm Schnee",lyP:"Bergpässe",cObs:"Schneehöhe"},
+es:{via:"Por puerto de montaña",viaHint:"opcional",viaAuto:"Buscar automáticamente",passTitle:"Puertos de montaña en tu ruta",passNote:"Detectados a lo largo de la línea recta entre la recogida y el destino. Si tu carretera va por otro lado, elige un puerto en “Por puerto de montaña”.",thPass:"Puerto",thElev:"Altitud",thMin:"Mínima",thSnowTot:"Nieve total",rPass:"Es probable que tu ruta cruce {v} a unos {m} m, donde las condiciones son peores que en los extremos.",rObsSnow:"Nieve en el suelo ahora: {cm} cm en la estación de {s} ({m} m, a {k} km).",rObsNone:"Ahora no hay nieve en el suelo en la estación de {s} ({m} m, a {k} km).",obsNow:"{cm} cm de nieve ahora",lyP:"Puertos de montaña",cObs:"Nieve en el suelo"}
+};
+for(const l in I18N_V14) Object.assign(I18N[l],I18N_V14[l]);
+let lang="en";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function t(k,p){let s=(I18N[lang]&&I18N[lang][k])??I18N.en[k]??k; if(p) for(const x in p) s=s.split("{"+x+"}").join(p[x]); return s}
+const locale=()=>(LANGS.find(l=>l[0]===lang)||LANGS[0])[2];
+class AppErr extends Error{constructor(k,p){super(k);this.k=k;this.p=p}}
+const errText=e=>e&&e.k?t(e.k,e.p):(e&&e.message)||String(e);
+
+/* ================= Reference data ================= */
+/* zone: heavy = snow country, mountain = high ground / passes, moderate = occasional snow, low = rare snow */
 const POINTS = [
  ["Sapporo","北海道",43.064,141.347,"heavy",1],["Asahikawa","北海道",43.771,142.365,"heavy"],["Niseko","北海道",42.902,140.759,"heavy"],
  ["Furano","北海道",43.342,142.383,"heavy"],["Obihiro","北海道",42.924,143.196,"heavy"],["Kushiro","北海道",42.985,144.381,"heavy"],
@@ -158,16 +261,41 @@ const POINTS = [
  ["Oita","大分県",33.238,131.613,"low",1],["Kuju","大分県",33.083,131.243,"mountain"],["Yufuin","大分県",33.264,131.358,"mountain"],
  ["Miyazaki","宮崎県",31.911,131.424,"low",1],["Ebino","宮崎県",32.045,130.811,"mountain"],["Kagoshima","鹿児島県",31.560,130.558,"low",1]
 ].map(p=>({name:p[0],pref:p[1],lat:p[2],lon:p[3],zone:p[4],capital:!!p[5]}));
+/* Mountain passes and high road sections. Coordinates are approximate (within a few km); edit freely. */
+const PASSES=[
+ ["Hokkaido 北海道","Nakayama Pass 中山峠",42.857,141.108,"heavy"],["Hokkaido 北海道","Karikachi Pass 狩勝峠",43.142,142.776,"heavy"],
+ ["Hokkaido 北海道","Nissho Pass 日勝峠",42.966,142.772,"heavy"],["Hokkaido 北海道","Sekihoku Pass 石北峠",43.705,143.090,"heavy"],
+ ["Hokkaido 北海道","Mikuni Pass 三国峠 (Hokkaido)",43.486,143.163,"heavy"],
+ ["Tohoku 東北","Hakkoda, Route 103 八甲田",40.650,140.870,"heavy"],["Tohoku 東北","Sekiyama Pass 関山峠",38.325,140.475,"heavy"],
+ ["Tohoku 東北","Ban-etsu Expwy, Inawashiro 磐越道",37.560,140.200,"heavy"],
+ ["Kanto–Chubu 関東・中部","Mikuni Pass 三国峠 (Gunma–Niigata)",36.819,138.817,"heavy"],["Kanto–Chubu 関東・中部","Kan-Etsu Expwy, Minakami–Yuzawa 関越道",36.830,138.900,"heavy"],
+ ["Kanto–Chubu 関東・中部","Joshinetsu Expwy, Myoko 上信越道",36.880,138.190,"heavy"],["Kanto–Chubu 関東・中部","Usui Pass 碓氷峠",36.360,138.650,"mountain"],
+ ["Kanto–Chubu 関東・中部","Hakone Pass 箱根峠",35.183,139.028,"mountain"],["Kanto–Chubu 関東・中部","Kagosaka Pass 籠坂峠",35.365,138.885,"mountain"],
+ ["Kanto–Chubu 関東・中部","Chuo Expwy, Sasago 中央道 笹子",35.610,138.810,"mountain"],["Kanto–Chubu 関東・中部","Shiojiri Pass 塩尻峠",36.080,138.020,"mountain"],
+ ["Kanto–Chubu 関東・中部","Abo Pass 安房峠",36.217,137.590,"heavy"],["Kanto–Chubu 関東・中部","Tokai-Hokuriku Expwy, Matsunoki Pass 松ノ木峠",35.960,136.930,"heavy"],
+ ["Kansai–Hokuriku 関西・北陸","Meishin Expwy, Sekigahara 名神 関ケ原",35.365,136.460,"mountain"],["Kansai–Hokuriku 関西・北陸","Hokuriku Expwy, Kinome 北陸道 木ノ芽",35.730,136.130,"heavy"],
+ ["Chugoku–Shikoku 中国・四国","Yonago Expwy, Hiruzen 米子道 蒜山",35.270,133.680,"heavy"],["Chugoku–Shikoku 中国・四国","Hamada Expwy, Geihoku 浜田道 芸北",34.700,132.200,"mountain"],
+ ["Chugoku–Shikoku 中国・四国","Kochi Expwy, Otoyo 高知道 大豊",33.770,133.660,"mountain"],
+ ["Kyushu 九州","Aso Milk Road 阿蘇ミルクロード",32.990,131.030,"mountain"],["Kyushu 九州","Makinoto Pass 牧ノ戸峠",33.106,131.233,"mountain"],
+ ["Kyushu 九州","Kyushu Expwy, Kakuto 九州道 加久藤",32.110,130.770,"mountain"]
+].map((p,i)=>({id:i,region:p[0],name:p[1],lat:p[2],lon:p[3],zone:p[4]}));
+/* Passes within 25 km of the straight line between two points */
+function passesBetween(a,b){
+  const ml=(a.lat+b.lat)/2*Math.PI/180, X=p=>p.lon*Math.cos(ml)*111.32, Y=p=>p.lat*110.57;
+  const ax=X(a),ay=Y(a),dx=X(b)-ax,dy=Y(b)-ay,L2=dx*dx+dy*dy;
+  if(L2<1) return [];
+  return PASSES.map(p=>{const u=((X(p)-ax)*dx+(Y(p)-ay)*dy)/L2; if(u<0||u>1) return null;
+    const ex=ax+u*dx-X(p), ey=ay+u*dy-Y(p); return Math.hypot(ex,ey)<=25?{p,u}:null})
+   .filter(Boolean).sort((x,y)=>x.u-y.u).slice(0,4).map(x=>x.p);
+}
+const ZKEY={heavy:"zHeavy",mountain:"zMountain",moderate:"zModerate",low:"zLow"};
+/* Volcanoes on the four main islands, from the Outcome Pacific Ring of Fire Hazard Map */
+const VOLCS=[["Mt. Fuji 富士山",35.361,138.728],["Sakurajima 桜島",31.585,130.657],["Aso 阿蘇山",32.884,131.104],["Asama 浅間山",36.406,138.523],["Ontake 御嶽山",35.893,137.480],["Kirishima 霧島",31.934,130.862],["Unzen 雲仙岳",32.761,130.299],["Usu 有珠山",42.541,140.839],["Tokachi 十勝岳",43.418,142.686]].map(v=>({name:v[0],lat:v[1],lon:v[2]}));
 
-const ZONE_TEXT={heavy:"snow country",mountain:"mountain area",moderate:"occasional-snow area",low:"low-snow area"};
-const LEVEL={2:{en:"Studless required",ja:"スタッドレス必須"},1:{en:"Studless recommended",ja:"スタッドレス推奨"},0:{en:"Not needed",ja:"ノーマルタイヤで可"}};
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-/* ---- Rules ---- */
+/* ================= Rules ================= */
 function seasonLevel(zone,month){
   if(zone==="heavy") return [12,1,2,3].includes(month)?2:([11,4].includes(month)?1:0);
-  if(zone==="mountain") return [12,1,2,3].includes(month)?1:([11,4].includes(month)?1:0);
+  if(zone==="mountain") return [11,12,1,2,3,4].includes(month)?1:0;
   if(zone==="moderate") return [12,1,2].includes(month)?1:0;
   return 0;
 }
@@ -178,11 +306,8 @@ function dayLevel(tmin,snow,precip){
   if(tmin<=0) return 1;
   return 0;
 }
-function nearestPoint(lat,lon){
-  let best=null,bd=1e9;
-  for(const p of POINTS){const d=(p.lat-lat)**2+((p.lon-lon)*Math.cos(lat*Math.PI/180))**2; if(d<bd){bd=d;best=p}}
-  return {p:best,km:Math.sqrt(bd)*111};
-}
+function kmBetween(a,b,c,d){const r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 12742*Math.asin(Math.sqrt(x))}
+function nearestPoint(lat,lon){let best=null,bd=1e9;for(const p of POINTS){const d=kmBetween(lat,lon,p.lat,p.lon);if(d<bd){bd=d;best=p}}return {p:best,km:bd}}
 function zoneFor(lat,lon,pref,elev){
   const {p,km}=nearestPoint(lat,lon);
   let zone = km<=30 ? p.zone : ((POINTS.find(x=>x.capital&&x.pref===pref)||p).zone);
@@ -191,33 +316,50 @@ function zoneFor(lat,lon,pref,elev){
   return zone;
 }
 
-/* ---- Dates ---- */
+/* ================= Dates & calendar weeks ================= */
 const pad=n=>String(n).padStart(2,"0");
 const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const addDays=(s,n)=>{const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d)};
 function tripDays(a,b){const out=[];let d=new Date(a+"T00:00:00");const e=new Date(b+"T00:00:00");while(d<=e&&out.length<60){out.push(iso(d));d.setDate(d.getDate()+1)}return out}
+function isoWeek(s){const d=new Date(s+"T00:00:00");const u=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=u.getUTCDay()||7;u.setUTCDate(u.getUTCDate()+4-day);const y0=new Date(Date.UTC(u.getUTCFullYear(),0,1));return Math.ceil(((u-y0)/864e5+1)/7)}
+function showWeeks(){
+  const a=$("d1").value,b=$("d2").value;
+  if(!a||!b||b<a){$("weeks").textContent="";return}
+  const wa=isoWeek(a),wb=isoWeek(b);
+  $("weeks").textContent= wa===wb ? t("wk",{n:wa}) : t("wk",{n:wa})+" – "+t("wk",{n:wb});
+}
+function quick(kind){
+  const td=iso(new Date()), dow=(new Date().getDay()+6)%7; /* Monday = 0, ISO week */
+  let a,b;
+  if(kind==="today"){a=td;b=td}
+  else if(kind==="week"){a=td;b=addDays(td,6-dow)}
+  else {a=addDays(td,7-dow);b=addDays(a,6)}
+  $("d1").value=a;$("d2").value=b;showWeeks();drawOverview();
+  if($("pick").value.trim()) run();
+}
+const fmtDay=s=>new Date(s+"T00:00:00").toLocaleDateString(locale(),{weekday:"short",month:"short",day:"numeric"});
 
-/* ---- Data sources ---- */
+/* ================= Data sources ================= */
 const FC_URL="https://api.open-meteo.com/v1/forecast?daily=temperature_2m_min,snowfall_sum,precipitation_sum&timezone=Asia%2FTokyo&forecast_days=16";
 async function forecast(lats,lons){
-  const r=await fetch(FC_URL+"&latitude="+lats.join(",")+"&longitude="+lons.join(","));
-  if(!r.ok) throw new Error("Forecast service returned "+r.status);
+  let r; try{ r=await fetch(FC_URL+"&latitude="+lats.join(",")+"&longitude="+lons.join(",")); }catch(e){ throw new AppErr("eForecast") }
+  if(!r.ok) throw new AppErr("eForecast");
   const j=await r.json(); return Array.isArray(j)?j:[j];
 }
 function jsonp(url){
   return new Promise((res,rej)=>{
     const cb="zc"+Date.now()+Math.floor(Math.random()*1e4);
     const s=document.createElement("script");
-    const t=setTimeout(()=>{done();rej(new Error("Postal lookup timed out"))},8000);
-    function done(){clearTimeout(t);delete window[cb];s.remove()}
+    const tm=setTimeout(()=>{done();rej(new AppErr("eTimeout"))},8000);
+    function done(){clearTimeout(tm);delete window[cb];s.remove()}
     window[cb]=d=>{done();res(d)};
-    s.onerror=()=>{done();rej(new Error("Postal lookup failed"))};
+    s.onerror=()=>{done();rej(new AppErr("eLookup"))};
     s.src=url+"&callback="+cb; document.head.appendChild(s);
   });
 }
-const OKINAWA="Okinawa doesn’t get snow. Normal tires are fine there.";
 async function locate(raw){
   const text=(raw||"").trim().replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/[－ー‐]/g,"-");
-  if(!text) throw new Error("Enter a postal code or a city name.");
+  if(!text) throw new AppErr("eEmpty");
   if(/^[-0-9\s〒]+$/.test(text)) return locatePostal(text);
   return locateName(text);
 }
@@ -230,45 +372,144 @@ async function locateName(q){
     const j=await r.json();
     if(j&&j.results&&j.results.length){
       const g=j.results[0];
-      if(/okinawa|沖縄/i.test(g.admin1||"")) throw new Error(OKINAWA);
+      if(/okinawa|沖縄/i.test(g.admin1||"")) throw new AppErr("eOkinawa");
       return {label:g.name+(g.admin1?", "+g.admin1:""),pref:null,lat:g.latitude,lon:g.longitude};
     }
-  }catch(e){ if(e.message===OKINAWA) throw e; }
+  }catch(e){ if(e.k) throw e; }
   try{
     const g=await fetch("https://msearch.gsi.go.jp/address-search/AddressSearch?q="+encodeURIComponent(q));
     const gj=await g.json();
     if(gj&&gj.length){
-      const t=gj[0].properties.title||q;
-      if(/沖縄県/.test(t)) throw new Error(OKINAWA);
-      const pref=(t.match(/^(北海道|東京都|京都府|大阪府|.{2,3}県)/)||[])[1]||null;
-      return {label:t,pref,lat:gj[0].geometry.coordinates[1],lon:gj[0].geometry.coordinates[0]};
+      const tt=gj[0].properties.title||q;
+      if(/沖縄県/.test(tt)) throw new AppErr("eOkinawa");
+      const pref=(tt.match(/^(北海道|東京都|京都府|大阪府|.{2,3}県)/)||[])[1]||null;
+      return {label:tt,pref,lat:gj[0].geometry.coordinates[1],lon:gj[0].geometry.coordinates[0]};
     }
-  }catch(e){ if(e.message===OKINAWA) throw e; }
-  throw new Error("Couldn’t find “"+q+"”. Try another spelling, the Japanese name (for example 白馬村), or the postal code.");
+  }catch(e){ if(e.k) throw e; }
+  throw new AppErr("eNotFound",{q});
 }
 async function locatePostal(raw){
   const code=raw.replace(/[^0-9]/g,"");
-  if(code.length!==7) throw new Error("Postal codes in Japan have 7 digits, like 060-0806.");
+  if(code.length!==7) throw new AppErr("ePostal");
+  const pretty="〒"+code.slice(0,3)+"-"+code.slice(3);
   const z=await jsonp("https://zipcloud.ibsnet.co.jp/api/search?zipcode="+code);
-  if(!z||!z.results||!z.results.length) throw new Error("No address found for 〒"+code.slice(0,3)+"-"+code.slice(3)+".");
+  if(!z||!z.results||!z.results.length) throw new AppErr("eNoAddr",{c:pretty});
   const a=z.results[0]; const addr=a.address1+a.address2+a.address3;
-  if(a.address1==="沖縄県") throw new Error(OKINAWA);
+  if(a.address1==="沖縄県") throw new AppErr("eOkinawa");
   let lat=null,lon=null;
   try{
     const g=await fetch("https://msearch.gsi.go.jp/address-search/AddressSearch?q="+encodeURIComponent(addr));
     const gj=await g.json(); if(gj&&gj.length){lon=gj[0].geometry.coordinates[0];lat=gj[0].geometry.coordinates[1]}
   }catch(e){}
-  if(lat==null){const c=POINTS.find(p=>p.capital&&p.pref===a.address1); if(!c) throw new Error("Couldn’t place "+addr+" on the map."); lat=c.lat;lon=c.lon}
-  return {label:"〒"+code.slice(0,3)+"-"+code.slice(3)+" "+addr,pref:a.address1,lat,lon};
+  if(lat==null){const c=POINTS.find(p=>p.capital&&p.pref===a.address1); if(!c) throw new AppErr("ePlace",{a:addr}); lat=c.lat;lon=c.lon}
+  return {label:pretty+" "+addr,pref:a.address1,lat,lon};
 }
 
-/* ---- Verdict for one place ---- */
-function assess(place,fc,days){
-  const zone=zoneFor(place.lat,place.lon,place.pref,fc&&fc.elevation);
+/* ---- Hazards: same live feeds as the Outcome Ring of Fire map (JMA, with P2P地震情報 fallback) ---- */
+let QUAKES=[], TSUNAMI=null;
+function parseCod(cod){
+  if(!cod) return null;
+  const m=cod.match(/([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)?/);
+  if(!m) return null;
+  const toDeg=(s,max)=>{const v=parseFloat(s),a=Math.abs(v); if(a<=max) return v; const sg=v<0?-1:1,deg=Math.trunc(a/100),mn=a-deg*100; return sg*(deg+mn/60)};
+  const la=toDeg(m[1],90), lo=toDeg(m[2],180);
+  return (isNaN(la)||isNaN(lo))?null:{la,lo};
+}
+const STRONG_JMA=["5-","5+","6-","6+","7"];
+async function loadQuakes(){
+  const since=Date.now()-7*864e5;
+  try{
+    const d=await (await fetch("https://www.jma.go.jp/bosai/quake/data/list.json")).json();
+    const seen=new Set(), out=[];
+    for(const ev of (Array.isArray(d)?d:[])){
+      if(!ev||seen.has(ev.eid)) continue;
+      const c=parseCod(ev.cod); if(!c) continue;
+      const tm=Date.parse(ev.at); if(!(tm>=since)) continue;
+      seen.add(ev.eid);
+      const mag=parseFloat(ev.mag);
+      out.push({lat:c.la,lon:c.lo,mag:isNaN(mag)?null:mag,strong:(mag>=5)||STRONG_JMA.includes(ev.maxi),time:tm,name:ev.anm||"",en:ev.en_anm||ev.anm||""});
+    }
+    if(out.length){QUAKES=out;return}
+  }catch(e){}
+  try{
+    const d=await (await fetch("https://api.p2pquake.net/v2/history?codes=551&limit=100")).json();
+    QUAKES=(Array.isArray(d)?d:[]).map(ev=>{
+      const eq=ev.earthquake; if(!eq||!eq.hypocenter) return null;
+      const h=eq.hypocenter; if(h.latitude==null||h.latitude<-90||h.longitude<-180) return null;
+      const tm=Date.parse((eq.time||"").replace(/\//g,"-").replace(" ","T")+"+09:00"); if(!(tm>=since)) return null;
+      const mag=h.magnitude>0?h.magnitude:null;
+      return {lat:h.latitude,lon:h.longitude,mag,strong:(mag>=5)||(eq.maxScale>=45),time:tm,name:h.name||"",en:h.name||""};
+    }).filter(Boolean);
+  }catch(e){QUAKES=[]}
+}
+async function loadTsunami(){
+  try{
+    const d=await (await fetch("https://api.p2pquake.net/v2/history?codes=552&limit=1")).json();
+    const rec=Array.isArray(d)&&d.length?d[0]:null;
+    const tm=rec?Date.parse(((rec.issue&&rec.issue.time)||rec.time||"").replace(/\//g,"-").replace(" ","T")+"+09:00"):NaN;
+    TSUNAMI=(rec&&!rec.cancelled&&Array.isArray(rec.areas)&&rec.areas.length&&Date.now()-tm<864e5)
+      ? rec.areas.slice(0,8).map(a=>a.name).join("・")+(rec.areas.length>8?" …":"") : null;
+  }catch(e){TSUNAMI=null}
+  const b=$("tsu"); if(TSUNAMI){b.textContent="⚠ "+t("hzTsu",{a:TSUNAMI});b.style.display="block"}else b.style.display="none";
+}
+const hazReady=Promise.allSettled([loadQuakes(),loadTsunami()]).then(()=>drawHazards());
+function hazardsFor(places){
+  const out=[];
+  if(TSUNAMI) out.push(t("hzTsu",{a:TSUNAMI}));
+  const seenQ=new Set();
+  for(const p of places){
+    for(const q of QUAKES){
+      if(!q.strong||seenQ.has(q)) continue;
+      const k=kmBetween(p.lat,p.lon,q.lat,q.lon);
+      if(k<=150){seenQ.add(q);out.push(t("hzQuake",{m:q.mag!=null?q.mag.toFixed(1):"–",k:Math.round(k),p:p.short,d:new Date(q.time).toLocaleDateString(locale(),{month:"short",day:"numeric"})}))}
+    }
+    for(const v of VOLCS){
+      const k=kmBetween(p.lat,p.lon,v.lat,v.lon);
+      if(k<=30) out.push(t("hzVolc",{v:v.name,k:Math.round(k),p:p.short}));
+    }
+  }
+  return out;
+}
+
+/* ---- AMeDAS: JMA ground sensors, snow depth on the ground now ---- */
+let AMEDAS=null;
+async function loadAmedas(){
+  if(AMEDAS) return AMEDAS;
+  try{
+    const [tbl,lt]=await Promise.all([
+      fetch("https://www.jma.go.jp/bosai/amedas/const/amedastable.json").then(r=>r.json()),
+      fetch("https://www.jma.go.jp/bosai/amedas/data/latest_time.txt").then(r=>r.text())]);
+    const s=lt.trim(); /* e.g. 2026-11-08T18:10:00+09:00; snow depth is reported on the hour */
+    const stamp=s.slice(0,4)+s.slice(5,7)+s.slice(8,10)+s.slice(11,13)+"0000";
+    const obs=await fetch("https://www.jma.go.jp/bosai/amedas/data/map/"+stamp+".json").then(r=>r.json());
+    const list=[];
+    for(const code in obs){
+      const o=obs[code], st=tbl[code];
+      if(!st||!o||!Array.isArray(o.snow)||o.snow[0]==null) continue;
+      list.push({lat:st.lat[0]+st.lat[1]/60,lon:st.lon[0]+st.lon[1]/60,alt:st.alt,cm:o.snow[0],ja:st.kjName,en:st.enName||st.kjName});
+    }
+    AMEDAS=list;
+  }catch(e){AMEDAS=[]}
+  return AMEDAS;
+}
+/* Nearest snow-depth station within 25 km and within 400 m of the place's height */
+function nearestObs(place,elev){
+  let best=null,bd=1e9;
+  for(const s of (AMEDAS||[])){
+    if(elev!=null && Math.abs(s.alt-elev)>400) continue;
+    const k=kmBetween(place.lat,place.lon,s.lat,s.lon);
+    if(k<=25&&k<bd){bd=k;best=s}
+  }
+  return best?{...best,km:Math.round(bd)}:null;
+}
+
+/* ================= Assessment ================= */
+function assess(place,fc,days,obs){
+  const zone=place.zone||zoneFor(place.lat,place.lon,place.pref,fc&&fc.elevation);
   const months=[...new Set(days.map(d=>+d.slice(5,7)))];
   const season=Math.max(...months.map(m=>seasonLevel(zone,m)));
   const rows=[]; let fcLevel=0, covered=0;
-  const idx=fc?Object.fromEntries(fc.daily.time.map((t,i)=>[t,i])):{};
+  const idx=fc&&fc.daily?Object.fromEntries(fc.daily.time.map((x,i)=>[x,i])):{};
   for(const d of days){
     const i=idx[d];
     if(i==null){rows.push({d,lvl:null});continue}
@@ -277,100 +518,190 @@ function assess(place,fc,days){
     const lvl=dayLevel(tmin,snow,pr); fcLevel=Math.max(fcLevel,lvl??0);
     rows.push({d,tmin,snow,pr,lvl});
   }
-  const reasons=[];
-  if(season===2) reasons.push(place.short+" is in "+ZONE_TEXT[zone]+" and your dates fall in the snow season.");
-  else if(season===1) reasons.push(place.short+" is in a "+ZONE_TEXT[zone]+" where snow and ice are possible at this time of year.");
-  if(fcLevel===2) reasons.push("Snow or freezing rain is in the forecast at "+place.short+" during your trip.");
-  else if(fcLevel===1) reasons.push("Overnight lows at or below 0 °C are forecast at "+place.short+", so watch for black ice.");
-  if(covered<days.length) reasons.push(covered?("Only "+covered+" of your "+days.length+" days are inside the 16-day forecast; the rest use the seasonal pattern."):("Your dates are beyond the 16-day forecast, so this uses the seasonal pattern for "+place.short+"."));
-  if(fc && fc.elevation>=600) reasons.push(place.short+" sits at about "+Math.round(fc.elevation)+" m, where conditions are harsher than in the valleys.");
-  return {zone,level:Math.max(season,fcLevel),rows,reasons};
+  const R=[], P=place.short, Z=ZKEY[zone];
+  if(season===2) R.push(["rSeason2",{p:P,z:Z}]); else if(season===1) R.push(["rSeason1",{p:P,z:Z}]);
+  if(fcLevel===2) R.push(["rFc2",{p:P}]); else if(fcLevel===1) R.push(["rFc1",{p:P}]);
+  if(covered<days.length) R.push(covered?["rPartial",{c:covered,n:days.length}]:["rBeyond",{p:P}]);
+  if(fc && fc.elevation>=600) R.push(["rElev",{p:P,m:Math.round(fc.elevation)}]);
+  let obsLevel=0;
+  if(obs){ const sp={cm:obs.cm,s:obs,m:obs.alt,k:obs.km}; if(obs.cm>=1){obsLevel=2;R.unshift(["rObsSnow",sp])} else R.push(["rObsNone",sp]); }
+  let minT=null,snowT=0; for(const r of rows){ if(r.tmin!=null) minT=minT==null?r.tmin:Math.min(minT,r.tmin); snowT+=r.snow||0 }
+  return {zone,level:Math.max(season,fcLevel,obsLevel),rows,reasons:R,elev:fc&&fc.elevation,minT,snowT,obs};
 }
 
-/* ---- Render ---- */
-function fmt(v,u,dp=0){return v==null?"–":(+v).toFixed(dp)+u}
-function render(results){
-  const level=Math.max(...results.map(r=>r.a.level));
-  const L=LEVEL[level];
-  let h=`<div class="sign l${level}"><div class="sign-inner"><div class="lamp" aria-hidden="true"></div><div><div class="ja">${L.ja}</div><div class="en">${L.en}</div></div></div></div>`;
-  if(level===0) h+=`<ul class="reasons"><li>No snow or freezing temperatures expected along your trip, and it’s outside the snow season for these areas.</li></ul>`;
-  for(const r of results){
-    h+=`<h2>${esc(r.role)}</h2><div class="place">${esc(r.place.label)}</div>`;
-    if(r.a.reasons.length) h+=`<ul class="reasons">${r.a.reasons.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul>`;
-    h+=`<table><thead><tr><th>Day</th><th>Low</th><th>Snow</th><th>Rain/snow</th><th></th></tr></thead><tbody>`;
-    for(const row of r.a.rows){
-      const d=new Date(row.d+"T00:00:00");
-      const day=d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
-      h+=`<tr><td>${day}</td><td>${fmt(row.tmin," °C")}</td><td>${fmt(row.snow," cm",1)}</td><td>${fmt(row.pr," mm")}</td><td><span class="dot ${row.lvl==null?"dn":"d"+row.lvl}" title="${row.lvl==null?"Beyond forecast":LEVEL[row.lvl].en}"></span></td></tr>`;
+/* ================= Render ================= */
+const fmt=(v,u,dp=0)=>v==null?"–":(+v).toLocaleString(locale(),{minimumFractionDigits:dp,maximumFractionDigits:dp})+u;
+let lastRun=null;
+const stName=s=>lang==="ja"?s.ja:s.en;
+function rp(p){const q={...p}; if(q.z) q.z=t(q.z); if(q.s&&typeof q.s==="object") q.s=stName(q.s); return q}
+function render(run){
+  const {results,passes}=run;
+  const endLevel=Math.max(...results.map(r=>r.a.level));
+  const level=Math.max(endLevel,...passes.map(x=>x.a.level));
+  const key="lv"+level;
+  const sub= lang==="ja" ? I18N.en[key] : I18N.ja[key];
+  let h=`<div class="sign l${level}"><div class="sign-inner"><div class="lamp" aria-hidden="true"></div><div><div class="sub" lang="${lang==="ja"?"en":"ja"}">${esc(sub)}</div><div class="main">${esc(t(key))}</div></div></div></div>`;
+  const hz=hazardsFor(results.map(r=>r.place));
+  h+= hz.length ? `<div class="haz"><h2>${esc(t("hazTitle"))}</h2><ul>${hz.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul></div>`
+                : `<div class="haz ok">${esc(t("hzNone"))}</div>`;
+  if(level===0) h+=`<ul class="reasons"><li>${esc(t("rNone"))}</li></ul>`;
+  const worst=passes.filter(x=>x.a.level>endLevel).sort((a,b)=>(b.a.elev||0)-(a.a.elev||0))[0];
+  if(worst) h+=`<ul class="reasons"><li>${esc(t("rPass",{v:worst.pass.name,m:Math.round(worst.a.elev||0)}))}</li></ul>`;
+  if(passes.length){
+    h+=`<h3>${esc(t("passTitle"))}</h3>`;
+    if(run.auto) h+=`<p class="place">${esc(t("passNote"))}</p>`;
+    h+=`<table><thead><tr><th>${esc(t("thPass"))}</th><th>${esc(t("thElev"))}</th><th>${esc(t("thMin"))}</th><th>${esc(t("thSnowTot"))}</th><th></th></tr></thead><tbody>`;
+    for(const x of passes){
+      const o=x.a.obs;
+      h+=`<tr><td>${esc(x.pass.name)}${o&&o.cm>=1?`<br><span class="obs">${esc(t("obsNow",{cm:o.cm}))}</span>`:""}</td><td>${x.a.elev!=null?"~"+fmt(x.a.elev," m"):"–"}</td><td>${fmt(x.a.minT," °C")}</td><td>${fmt(x.a.snowT," cm",1)}</td><td><span class="dot d${x.a.level}" title="${esc(t("lv"+x.a.level))}"></span></td></tr>`;
     }
     h+=`</tbody></table>`;
   }
-  if(level>0) h+=`<p class="place" style="margin-top:12px">Studless stock is limited at many branches. Ask for it when you book, not at the counter.</p>`;
+  for(const r of results){
+    h+=`<h3>${esc(t(r.role))}</h3><div class="place">${esc(r.place.label)}</div>`;
+    if(r.a.reasons.length) h+=`<ul class="reasons">${r.a.reasons.map(([k,p])=>"<li>"+esc(t(k,rp(p)))+"</li>").join("")}</ul>`;
+    h+=`<table><thead><tr><th>${esc(t("thDay"))}</th><th>${esc(t("thLow"))}</th><th>${esc(t("thSnow"))}</th><th>${esc(t("thPrecip"))}</th><th></th></tr></thead><tbody>`;
+    let wk=null;
+    for(const row of r.a.rows){
+      const w=isoWeek(row.d);
+      if(w!==wk){wk=w;h+=`<tr class="wk"><td colspan="5">${esc(t("wk",{n:w}))}</td></tr>`}
+      h+=`<tr><td>${esc(fmtDay(row.d))}</td><td>${fmt(row.tmin," °C")}</td><td>${fmt(row.snow," cm",1)}</td><td>${fmt(row.pr," mm")}</td><td><span class="dot ${row.lvl==null?"dn":"d"+row.lvl}" title="${esc(row.lvl==null?t("beyond"):t("lv"+row.lvl))}"></span></td></tr>`;
+    }
+    h+=`</tbody></table>`;
+  }
+  if(level>0) h+=`<p class="place" style="margin-top:12px">${esc(t("stock"))}</p>`;
   $("out").innerHTML=h;
 }
 
 async function run(){
-  $("err").textContent=""; const btn=$("go"); btn.disabled=true; btn.textContent="Checking…";
+  $("err").textContent=""; const btn=$("go"); btn.disabled=true; btn.textContent=t("checking");
   try{
     const a=$("d1").value,b=$("d2").value;
-    if(!a||!b) throw new Error("Choose your first and last day.");
-    if(b<a) throw new Error("The last day comes before the first day.");
+    if(!a||!b) throw new AppErr("eDates");
+    if(b<a) throw new AppErr("eOrder");
     const days=tripDays(a,b);
-    const places=[{role:"Pickup",...(await locate($("pick").value))}];
-    if($("dest").value.trim()) places.push({role:"Destination",...(await locate($("dest").value))});
+    const places=[{role:"pick",...(await locate($("pick").value))}];
+    if($("dest").value.trim()) places.push({role:"dest",...(await locate($("dest").value))});
     for(const p of places) p.short=p.label.replace(/^〒\S+\s/,"").split(",")[0];
-    const fcs=await forecast(places.map(p=>p.lat.toFixed(4)),places.map(p=>p.lon.toFixed(4)));
-    const results=places.map((p,i)=>({role:p.role,place:p,a:assess(p,fcs[i],days)}));
-    render(results);
+    const viaId=$("via").value;
+    let passList=[], auto=false;
+    if(viaId!==""){ passList=[PASSES[+viaId]] }
+    else if(places.length===2){ passList=passesBetween(places[0],places[1]); auto=passList.length>0 }
+    const pts=[...places,...passList];
+    const [fcs]=await Promise.all([forecast(pts.map(p=>p.lat.toFixed(4)),pts.map(p=>p.lon.toFixed(4))),loadAmedas(),hazReady]);
+    /* Snow on the ground now only matters for trips starting within the next 3 days */
+    const useObs=days[0]<=addDays(iso(new Date()),3);
+    const obsFor=(p,fc)=>useObs?nearestObs(p,fc&&fc.elevation):null;
+    const results=places.map((p,i)=>({role:p.role,place:p,a:assess(p,fcs[i],days,obsFor(p,fcs[i]))}));
+    const passes=passList.map((ps,j)=>{const fc=fcs[places.length+j]; return {pass:ps,a:assess({...ps,short:ps.name},fc,days,obsFor(ps,fc))}});
+    lastRun={results,passes,auto};
+    render(lastRun);
+    tripLayer.clearLayers();
     places.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:9,color:"#FB8102",weight:3,fillOpacity:0}).addTo(tripLayer));
-    map.fitBounds(L.latLngBounds(places.map(p=>[p.lat,p.lon])).pad(0.6),{maxZoom:9});
-  }catch(e){$("err").textContent=e.message}
-  finally{btn.disabled=false;btn.textContent="Check my trip"}
+    passList.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:11,color:"#FB8102",weight:2,dashArray:"3 3",fillOpacity:0}).addTo(tripLayer));
+    if(places.length===2) L.polyline([[places[0].lat,places[0].lon],[places[1].lat,places[1].lon]],{color:"#FB8102",weight:2,dashArray:"6 6",opacity:.7}).addTo(tripLayer);
+    map.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lon])).pad(0.6),{maxZoom:9});
+  }catch(e){$("err").textContent=errText(e)}
+  finally{btn.disabled=false;btn.textContent=t("check")}
 }
 
-/* ---- Map ---- */
+/* ================= Map ================= */
 const map=L.map("map",{zoomControl:true}).setView([37.2,137.5],5);
 L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",{maxZoom:18,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>'}).addTo(map);
-const ptLayer=L.layerGroup().addTo(map), tripLayer=L.layerGroup().addTo(map), storeLayer=L.layerGroup().addTo(map);
-const COLORS=()=>{const s=getComputedStyle(document.documentElement);return {2:s.getPropertyValue("--red").trim(),1:s.getPropertyValue("--amber").trim(),0:s.getPropertyValue("--green").trim(),n:s.getPropertyValue("--grey").trim()}};
-
+const ptLayer=L.layerGroup().addTo(map), quakeLayer=L.layerGroup().addTo(map), volcLayer=L.layerGroup().addTo(map), storeLayer=L.layerGroup().addTo(map), passLayer=L.layerGroup().addTo(map), tripLayer=L.layerGroup().addTo(map);
+let layerCtl=null;
+function buildLayerControl(){
+  if(layerCtl) map.removeControl(layerCtl);
+  const o={}; o[t("lyV")]=ptLayer; o[t("lyQ")]=quakeLayer; o[t("lyVo")]=volcLayer; o[t("lyP")]=passLayer; o[t("lyS")]=storeLayer;
+  layerCtl=L.control.layers(null,o,{collapsed:true,position:"topright"}).addTo(map);
+}
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const COLORS=()=>({2:css("--red"),1:css("--amber"),0:css("--green"),n:css("--grey")});
+let overview=null; /* {days, fcs} */
 async function drawOverview(){
   const a=$("d1").value,b=$("d2").value; if(!a||!b||b<a) return;
   const days=tripDays(a,b);
-  $("mapnote").textContent="Loading forecast…";
-  ptLayer.clearLayers();
+  $("mapnote").textContent=t("mapLoading");
   try{
     const fcs=await forecast(POINTS.map(p=>p.lat),POINTS.map(p=>p.lon));
-    const C=COLORS();
-    POINTS.forEach((p,i)=>{
-      const as=assess({...p,short:p.name,label:p.name},fcs[i],days);
-      const m=L.circleMarker([p.lat,p.lon],{radius:p.capital?6:7,color:"#fff",weight:1.5,fillColor:C[as.level],fillOpacity:.95}).addTo(ptLayer);
-      m.bindPopup(`<strong>${esc(p.name)}</strong> ${esc(p.pref)}<br>${esc(LEVEL[as.level].en)}<br><span style="color:#5A6B7B">${esc(ZONE_TEXT[as.zone])}</span>`);
-    });
-    $("mapnote").textContent="Showing "+days.length+" day"+(days.length>1?"s":"")+" from "+a+". Tap a dot for details.";
-  }catch(e){
-    POINTS.forEach(p=>L.circleMarker([p.lat,p.lon],{radius:6,color:"#fff",weight:1.5,fillColor:COLORS().n,fillOpacity:.9}).addTo(ptLayer));
-    $("mapnote").textContent="Forecast unavailable right now. Try again shortly.";
-  }
+    overview={days,fcs};
+  }catch(e){overview={days,fcs:null}}
+  paintOverview();
 }
-
+function paintOverview(){
+  ptLayer.clearLayers(); if(!overview) return;
+  const C=COLORS(), {days,fcs}=overview;
+  POINTS.forEach((p,i)=>{
+    const lvl=fcs?assess({...p,short:p.name},fcs[i],days).level:null;
+    L.circleMarker([p.lat,p.lon],{radius:p.capital?6:7,color:"#fff",weight:1.5,fillColor:lvl==null?C.n:C[lvl],fillOpacity:.95}).addTo(ptLayer)
+     .bindPopup(()=>`<strong>${esc(p.name)}</strong> ${esc(p.pref)}<br>${esc(lvl==null?t("lgN"):t("lv"+lvl))}`);
+  });
+  $("mapnote").textContent= fcs ? t("mapShowing",{n:days.length,d:fmtDay(days[0])}) : t("mapErr");
+}
+const sqIcon=()=>L.divIcon({className:"",html:'<span class="sq" style="width:12px;height:12px"></span>',iconSize:[12,12],iconAnchor:[6,6]});
+const diaIcon=()=>L.divIcon({className:"",html:'<span class="dia"></span>',iconSize:[12,12],iconAnchor:[6,6]});
+PASSES.forEach(p=>L.marker([p.lat,p.lon],{icon:diaIcon(),title:p.name}).addTo(passLayer).bindPopup(()=>`<strong>${esc(p.name)}</strong><br><button class="popbtn" data-via="${p.id}">${esc(t("via"))}</button>`));
+const triIcon=()=>L.divIcon({className:"",html:'<span class="tri"></span>',iconSize:[12,11],iconAnchor:[6,8]});
+function drawHazards(){
+  quakeLayer.clearLayers(); volcLayer.clearLayers();
+  QUAKES.forEach(q=>L.marker([q.lat,q.lon],{icon:sqIcon(),zIndexOffset:-100}).addTo(quakeLayer)
+    .bindPopup(()=>`<strong>M${q.mag!=null?q.mag.toFixed(1):"–"}</strong> ${esc(lang==="ja"?q.name:q.en)}<br>${esc(new Date(q.time).toLocaleString(locale(),{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}))}<br><span style="color:#5A6B7B">気象庁 JMA</span>`));
+  VOLCS.forEach(v=>L.marker([v.lat,v.lon],{icon:triIcon()}).addTo(volcLayer).bindPopup(()=>`<strong>🌋 ${esc(v.name)}</strong>`));
+}
 /* Optional rental store layer: fill stores.json (see README) */
 fetch("stores.json").then(r=>r.ok?r.json():[]).then(list=>{
   (list||[]).forEach(s=>{
     if(typeof s.lat!=="number"||typeof s.lon!=="number") return;
-    const m=L.marker([s.lat,s.lon],{title:s.name}).addTo(storeLayer);
     const zip=(s.postal||"").replace(/[^0-9]/g,"");
-    m.bindPopup(`<strong>${esc(s.name||"Store")}</strong><br>${esc(s.address||"")}<br>Studless: ${esc(s.studless||"ask the branch")}`+(zip.length===7?`<br><button class="popbtn" data-zip="${zip}">Use as pickup</button>`:""));
+    L.marker([s.lat,s.lon],{title:s.name}).addTo(storeLayer)
+     .bindPopup(()=>`<strong>${esc(s.name||"")}</strong><br>${esc(s.address||"")}<br>${esc(t("studless"))}: ${esc(s.studless||t("askBranch"))}`+(zip.length===7?`<br><button class="popbtn" data-zip="${zip}">${esc(t("usePick"))}</button>`:""));
   });
 }).catch(()=>{});
-map.on("popupopen",e=>{const b=e.popup.getElement().querySelector(".popbtn"); if(b) b.onclick=()=>{$("pick").value=b.dataset.zip; map.closePopup(); $("pick").focus()}});
+map.on("popupopen",e=>{const b=e.popup.getElement().querySelector(".popbtn"); if(!b) return;
+  b.onclick=()=>{ if(b.dataset.via!=null){$("via").value=b.dataset.via} else {$("pick").value=b.dataset.zip; $("pick").focus()} map.closePopup() }});
 
-/* ---- Init ---- */
-const today=new Date(); const end=new Date(); end.setDate(today.getDate()+3);
+/* ================= Language switching ================= */
+function buildFooter(){
+  $("foot").innerHTML=esc(t("disclaimer"))+"<br><br>"+
+   esc(t("cWeather"))+': <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · '+
+   esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
+   esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
+   esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS<br>"+
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.4';
+}
+function buildVia(){
+  const cur=$("via").value; const groups={};
+  PASSES.forEach(p=>(groups[p.region]=groups[p.region]||[]).push(p));
+  $("via").innerHTML=`<option value="">${esc(t("viaAuto"))}</option>`+Object.keys(groups).map(g=>`<optgroup label="${esc(g)}">${groups[g].map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}</optgroup>`).join("");
+  $("via").value=cur;
+}
+function setLang(code){
+  lang=I18N[code]?code:"en";
+  try{localStorage.setItem("studless-lang",lang)}catch(e){}
+  document.documentElement.lang=locale();
+  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
+  document.title=t("title"); $("lang").value=lang;
+  buildFooter(); buildLayerControl(); buildVia(); showWeeks();
+  if(lastRun) render(lastRun);
+  paintOverview();
+  if(TSUNAMI) $("tsu").textContent="⚠ "+t("hzTsu",{a:TSUNAMI});
+}
+function detectLang(){
+  try{const s=localStorage.getItem("studless-lang"); if(s&&I18N[s]) return s}catch(e){}
+  for(const l of (navigator.languages||[navigator.language||"en"])){let c=String(l).toLowerCase().slice(0,2); if(I18N[c]) return c}
+  return "en";
+}
+
+/* ================= Init ================= */
+$("lang").innerHTML=LANGS.map(l=>`<option value="${l[0]}" lang="${l[2]}">${l[1]}</option>`).join("");
+$("lang").addEventListener("change",e=>setLang(e.target.value));
+const today=new Date(), end=new Date(); end.setDate(today.getDate()+3);
 $("d1").value=iso(today); $("d2").value=iso(end);
 $("go").addEventListener("click",run);
+document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>quick(b.dataset.q)));
 ["pick","dest"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")run()}));
-["d1","d2"].forEach(id=>$(id).addEventListener("change",drawOverview));
+["d1","d2"].forEach(id=>$(id).addEventListener("change",()=>{showWeeks();drawOverview()}));
+setLang(detectLang());
 drawOverview();
 </script>
 </body>
