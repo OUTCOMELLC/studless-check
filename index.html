@@ -411,6 +411,23 @@ const PICKUPS=[
  [["obihiro airport","帯広空港"],"Obihiro Airport 帯広空港","北海道",42.733,143.217],
  [["naha","naha airport","那覇","那覇空港","okinawa","沖縄"],"Naha Airport 那覇空港","沖縄県",26.196,127.646]
 ].map(p=>({keys:p[0],label:p[1],pref:p[2],lat:p[3],lon:p[4]}));
+/* The 47 prefectures: a prefecture name is checked at its capital */
+const PREFS=[["Hokkaido","北海道"],["Aomori","青森県"],["Iwate","岩手県"],["Miyagi","宮城県"],["Akita","秋田県"],["Yamagata","山形県"],["Fukushima","福島県"],
+ ["Ibaraki","茨城県"],["Tochigi","栃木県"],["Gunma","群馬県"],["Saitama","埼玉県"],["Chiba","千葉県"],["Tokyo","東京都"],["Kanagawa","神奈川県"],
+ ["Niigata","新潟県"],["Toyama","富山県"],["Ishikawa","石川県"],["Fukui","福井県"],["Yamanashi","山梨県"],["Nagano","長野県"],["Gifu","岐阜県"],
+ ["Shizuoka","静岡県"],["Aichi","愛知県"],["Mie","三重県"],["Shiga","滋賀県"],["Kyoto","京都府"],["Osaka","大阪府"],["Hyogo","兵庫県"],["Nara","奈良県"],
+ ["Wakayama","和歌山県"],["Tottori","鳥取県"],["Shimane","島根県"],["Okayama","岡山県"],["Hiroshima","広島県"],["Yamaguchi","山口県"],
+ ["Tokushima","徳島県"],["Kagawa","香川県"],["Ehime","愛媛県"],["Kochi","高知県"],["Fukuoka","福岡県"],["Saga","佐賀県"],["Nagasaki","長崎県"],
+ ["Kumamoto","熊本県"],["Oita","大分県"],["Miyazaki","宮崎県"],["Kagoshima","鹿児島県"],["Okinawa","沖縄県"]];
+function prefLookup(key){
+  const k=key.toLowerCase().replace(/[\s-]*(prefecture|pref\.?|ken|fu|to)$/i,"").replace(/ō/g,"o").trim();
+  const p=PREFS.find(([en,ja])=>en.toLowerCase()===k||ja===key||ja.replace(/[県府都]$/,"")===key);
+  if(!p) return null;
+  const [en,ja]=p;
+  if(ja==="沖縄県") return {label:"Okinawa 沖縄県, Naha",pref:ja,lat:26.212,lon:127.681,okinawa:true};
+  const c=POINTS.find(x=>x.capital&&x.pref===ja); if(!c) return null;
+  return {label:en+" "+ja+", "+c.name,pref:ja,lat:c.lat,lon:c.lon};
+}
 /* Passes within 25 km of the straight line between two points */
 function passesBetween(a,b,radius=25){
   const ml=(a.lat+b.lat)/2*Math.PI/180, X=p=>p.lon*Math.cos(ml)*111.32, Y=p=>p.lat*110.57;
@@ -653,15 +670,27 @@ async function locateName(q){
   if(pk) return {label:pk.label,pref:pk.pref,lat:pk.lat,lon:pk.lon,okinawa:pk.pref==="沖縄県"};
   const hit=POINTS.find(p=>p.name.toLowerCase()===key);
   if(hit) return {label:hit.name+", "+hit.pref,pref:hit.pref,lat:hit.lat,lon:hit.lon};
-  try{
-    const r=await fetch("https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&countryCode=JP&name="+encodeURIComponent(q));
-    const j=await r.json();
-    if(j&&j.results&&j.results.length){
+  const pf=prefLookup(q.trim());
+  if(pf) return pf;
+  /* Open-Meteo place search; small towns are often listed with their suffix (Hisayama-machi) */
+  const om=async name=>{
+    try{
+      const r=await fetch("https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&countryCode=JP&name="+encodeURIComponent(name));
+      const j=await r.json();
+      if(!j||!j.results||!j.results.length) return null;
       /* Several places share a name (Hakata is in Fukuoka and in Ehime): take the most populous */
       const g=[...j.results].sort((a,b)=>(b.population||0)-(a.population||0))[0];
       return {label:g.name+(g.admin1?", "+g.admin1:""),pref:null,lat:g.latitude,lon:g.longitude,okinawa:/okinawa|沖縄/i.test(g.admin1||"")};
-    }
-  }catch(e){ if(e.k) throw e; }
+    }catch(e){return null}
+  };
+  /* Try the name as typed, then without and with the usual town suffixes:
+     "hisayama-machi" -> "hisayama", "hisayama machi"; "hisayama" -> "hisayama-machi", "-cho", "-mura", "-shi" */
+  const norm=q.trim().replace(/[ōŌ]/g,"o").replace(/[ūŪ]/g,"u");
+  const latin=/^[a-z\s'.-]+$/i.test(norm);
+  const base=latin?norm.replace(/[\s-]*(machi|cho|mura|son|shi|town|village|city|ku|ward)$/i,"").trim():norm;
+  const names=[...new Set([norm,...(latin?[base,base+" machi",base+"-machi",base+"-cho",base+"-mura",base+"-shi"]:[])])];
+  let hit1=await om(names[0]); if(hit1) return hit1;
+  if(names.length>1){ const tries=await Promise.all(names.slice(1).map(om)); hit1=tries.find(Boolean); if(hit1) return hit1; }
   try{
     const g=await fetch("https://msearch.gsi.go.jp/address-search/AddressSearch?q="+encodeURIComponent(q));
     const gj=await g.json();
@@ -671,6 +700,16 @@ async function locateName(q){
       return {label:tt,pref,lat:gj[0].geometry.coordinates[1],lon:gj[0].geometry.coordinates[0],okinawa:pref==="沖縄県"};
     }
   }catch(e){ if(e.k) throw e; }
+  /* Last resort: OpenStreetMap knows nearly every town by its romaji name (used only when all else fails) */
+  for(const nq of [...new Set([norm,base])]) try{
+    const r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=jp&limit=1&accept-language=en&q="+encodeURIComponent(nq));
+    const j=await r.json();
+    if(Array.isArray(j)&&j.length){
+      const n=j[0], parts=String(n.display_name||q).split(",").map(s=>s.trim());
+      const pref=parts.find(s=>/Prefecture$/i.test(s))||parts[parts.length-2]||"";
+      return {label:parts[0]+(pref?", "+pref.replace(/ Prefecture$/i,""):""),pref:null,lat:+n.lat,lon:+n.lon,okinawa:/okinawa/i.test(n.display_name||"")};
+    }
+  }catch(e){}
   throw new AppErr("eNotFound",{q});
 }
 async function locatePostal(raw){
@@ -1047,10 +1086,10 @@ map.on("popupopen",e=>{const b=e.popup.getElement().querySelector(".popbtn"); if
 function buildFooter(){
   $("foot").innerHTML=esc(t("disclaimer"))+"<br><br>"+
    esc(t("cWeather"))+': <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · '+
-   esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI · "+
+   esc(t("cPostal"))+": zipcloud · "+esc(t("cNames"))+": Open-Meteo, GSI, OpenStreetMap · "+
    esc(t("cMap"))+': <a href="https://maps.gsi.go.jp" target="_blank" rel="noopener">国土地理院 GSI</a> · '+
    esc(t("cHaz"))+": 気象庁 JMA, P2P地震情報 · "+esc(t("cObs"))+": 気象庁 AMeDAS · "+esc(t("lyT"))+": 国土地理院 GSI · "+esc(t("profTitle"))+": Open-Meteo<br>"+
-   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.10';
+   'Outcome LLC · “Map the Gap” · <a href="https://outcometn.com" target="_blank" rel="noopener">outcometn.com</a> · v1.6.14';
 }
 function setLang(code){
   lang=I18N[code]?code:"en";
